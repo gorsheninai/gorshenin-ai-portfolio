@@ -136,7 +136,7 @@ export default function ProductionIntro() {
           <span className="production-title-mask" aria-hidden="true">
             <span className="production-title-main">
               {Array.from(c.headingMain).map((letter, index) => (
-                <span className="production-title-letter" style={{ "--letter-index": index } as React.CSSProperties} key={`${letter}-${index}`}>
+                <span className="production-title-letter" key={`${letter}-${index}`}>
                   {letter}
                 </span>
               ))}
