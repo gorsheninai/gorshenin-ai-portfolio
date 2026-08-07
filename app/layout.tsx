@@ -3,9 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import SiteChrome from "./site-chrome";
 import HeroVideo from "./hero-video";
 import HeroProximity from "./hero-proximity";
+import InteractiveBuildings from "./interactive-buildings";
 import "./globals.css";
 import "./production-header.css";
 import "./hero-proximity.css";
+import "./site-enhancements.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gorshenin AI — Portfolio",
-  description: "AI creative direction, generative films and visual campaigns by Vlad Gorshenin.",
+  title: "GORSHENIN PRODUCTION",
+  description: "Контент без ограничений — AI production, generative films and visual campaigns by Vlad Gorshenin.",
   other: {
     "codex-preview": "development",
   },
@@ -42,6 +44,7 @@ export default function RootLayout({
         <HeroVideo />
         <SiteChrome />
         <HeroProximity />
+        <InteractiveBuildings />
         {children}
       </body>
     </html>
