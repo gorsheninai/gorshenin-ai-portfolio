@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 
-const WORD = "КРЕАТИВНЫЙ";
-const RADIUS = 280;
+const CREATIVE_WORD = "КРЕАТИВНЫЙ";
+const PRODUCTION_WORD = "ИИ-ПРОДАКШН";
+const CREATIVE_RADIUS = 280;
+const RENDER_RADIUS = 250;
 
 function ProximityWord() {
   const letterRefs = useRef<Array<HTMLSpanElement | null>>([]);
@@ -30,7 +32,7 @@ function ProximityWord() {
         const dx = pointer.current.x - centerX;
         const dy = pointer.current.y - centerY;
         const distance = Math.hypot(dx, dy);
-        const proximity = Math.max(0, 1 - distance / RADIUS);
+        const proximity = Math.max(0, 1 - distance / CREATIVE_RADIUS);
         const strength = proximity * proximity * (3 - 2 * proximity);
         const directionX = distance > 0 ? dx / distance : 0;
         const directionY = distance > 0 ? dy / distance : 0;
@@ -82,7 +84,7 @@ function ProximityWord() {
 
   return (
     <span className="proximity-word" aria-hidden="true">
-      {[...WORD].map((letter, index) => (
+      {[...CREATIVE_WORD].map((letter, index) => (
         <span
           key={`${letter}-${index}`}
           ref={(node) => { letterRefs.current[index] = node; }}
@@ -96,19 +98,97 @@ function ProximityWord() {
   );
 }
 
+function RenderWord() {
+  const fillRef = useRef<HTMLSpanElement | null>(null);
+  const animationFrame = useRef<number | null>(null);
+  const pointer = useRef({ x: -10000, y: -10000 });
+
+  useEffect(() => {
+    const fill = fillRef.current;
+    if (!fill) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    if (reducedMotion || !hasFinePointer) return;
+
+    const paint = () => {
+      animationFrame.current = null;
+      const node = fillRef.current;
+      if (!node) return;
+
+      const rect = node.getBoundingClientRect();
+      const closestX = Math.max(rect.left, Math.min(pointer.current.x, rect.right));
+      const closestY = Math.max(rect.top, Math.min(pointer.current.y, rect.bottom));
+      const distance = Math.hypot(pointer.current.x - closestX, pointer.current.y - closestY);
+      const proximity = Math.max(0, 1 - distance / RENDER_RADIUS);
+      const strength = proximity * proximity * (3 - 2 * proximity);
+
+      node.style.setProperty("--render-x", `${(pointer.current.x - rect.left).toFixed(1)}px`);
+      node.style.setProperty("--render-y", `${(pointer.current.y - rect.top).toFixed(1)}px`);
+      node.style.setProperty("--render-strength", strength.toFixed(3));
+      node.style.opacity = strength.toFixed(3);
+    };
+
+    const schedulePaint = () => {
+      if (animationFrame.current !== null) return;
+      animationFrame.current = window.requestAnimationFrame(paint);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      pointer.current = { x: event.clientX, y: event.clientY };
+      schedulePaint();
+    };
+
+    const reset = () => {
+      pointer.current = { x: -10000, y: -10000 };
+      if (fillRef.current) fillRef.current.style.opacity = "0";
+    };
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("blur", reset);
+    document.documentElement.addEventListener("mouseleave", reset);
+
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("blur", reset);
+      document.documentElement.removeEventListener("mouseleave", reset);
+      if (animationFrame.current !== null) window.cancelAnimationFrame(animationFrame.current);
+    };
+  }, []);
+
+  return (
+    <span className="render-word" aria-hidden="true">
+      <span className="render-outline">{PRODUCTION_WORD}</span>
+      <span ref={fillRef} className="render-fill">{PRODUCTION_WORD}</span>
+    </span>
+  );
+}
+
 export default function HeroProximity() {
   const pathname = usePathname();
-  const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [creativeTarget, setCreativeTarget] = useState<HTMLElement | null>(null);
+  const [productionTarget, setProductionTarget] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
-      const heroWord = document.querySelector<HTMLElement>(".hero h1 > span:first-child");
-      if (heroWord) heroWord.setAttribute("aria-label", WORD);
-      setTarget(heroWord);
+      const creative = document.querySelector<HTMLElement>(".hero h1 > span:first-child");
+      const production = document.querySelector<HTMLElement>(".hero h1 > span:nth-child(2)");
+
+      if (creative) creative.setAttribute("aria-label", CREATIVE_WORD);
+      if (production) production.setAttribute("aria-label", PRODUCTION_WORD);
+
+      setCreativeTarget(creative);
+      setProductionTarget(production);
     });
 
     return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
-  return target ? createPortal(<ProximityWord />, target) : null;
+  return (
+    <>
+      {creativeTarget ? createPortal(<ProximityWord />, creativeTarget) : null}
+      {productionTarget ? createPortal(<RenderWord />, productionTarget) : null}
+    </>
+  );
 }
