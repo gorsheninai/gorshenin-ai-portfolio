@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import SiteChrome from "./site-chrome";
 import HeroVideo from "./hero-video";
+import HeroProximity from "./hero-proximity";
 import "./globals.css";
 import "./production-header.css";
+import "./hero-proximity.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +41,7 @@ export default function RootLayout({
       >
         <HeroVideo />
         <SiteChrome />
+        <HeroProximity />
         {children}
       </body>
     </html>
