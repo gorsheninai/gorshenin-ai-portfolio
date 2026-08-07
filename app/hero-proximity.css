@@ -1,4 +1,5 @@
-.hero h1 > span:nth-child(1)::after {
+.hero h1 > span:nth-child(1)::after,
+.hero h1 > span:nth-child(2)::after {
   content: none !important;
   display: none !important;
 }
@@ -28,16 +29,113 @@
     text-shadow 170ms ease;
 }
 
+.render-word {
+  position: relative;
+  display: block !important;
+  width: max-content;
+  margin-left: auto;
+  z-index: 3;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-size: clamp(3.5rem, 9.1vw, 10rem) !important;
+  font-weight: 900;
+  line-height: .78;
+  letter-spacing: -.08em;
+  user-select: none;
+  isolation: isolate;
+}
+
+.render-outline,
+.render-fill {
+  display: block !important;
+  white-space: nowrap;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.render-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--paper);
+  text-stroke: 1px var(--paper);
+}
+
+.render-fill {
+  --render-x: 50%;
+  --render-y: 50%;
+  --render-strength: 0;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: transparent;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #d8ff36 0 2px,
+      #f2ff9b 2px 3px,
+      #b6dc20 3px 5px,
+      #d8ff36 5px 7px
+    );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-mask-image: radial-gradient(
+    circle 190px at var(--render-x) var(--render-y),
+    #000 0%,
+    #000 42%,
+    rgba(0,0,0,.92) 58%,
+    rgba(0,0,0,.45) 76%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle 190px at var(--render-x) var(--render-y),
+    #000 0%,
+    #000 42%,
+    rgba(0,0,0,.92) 58%,
+    rgba(0,0,0,.45) 76%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 calc(6px + 12px * var(--render-strength)) rgba(216,255,54,.2));
+  will-change: opacity, mask-image, -webkit-mask-image;
+  transition: opacity 120ms ease-out;
+}
+
+.render-word::after {
+  content: "";
+  position: absolute;
+  inset: -8% -2%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(216,255,54,.06), transparent);
+  transform: translateX(-120%);
+}
+
 @media (max-width: 760px) {
-  .proximity-word {
+  .proximity-word,
+  .render-word {
     font-size: 15.4vw !important;
     line-height: .84;
+  }
+
+  .render-word {
+    margin-left: 0;
   }
 }
 
 @media (hover: none), (pointer: coarse) {
   .creative-letter {
     animation: creative-mobile-wave 4.2s ease-in-out infinite;
+  }
+
+  .render-fill {
+    opacity: .95;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 35%, #000 48%, #000 58%, transparent 72%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, transparent 35%, #000 48%, #000 58%, transparent 72%, transparent 100%);
+    -webkit-mask-size: 230% 100%;
+    mask-size: 230% 100%;
+    -webkit-mask-position: 130% 0;
+    mask-position: 130% 0;
+    animation: production-mobile-render 4.8s cubic-bezier(.55,.05,.2,1) infinite 1.1s;
   }
 }
 
@@ -59,6 +157,21 @@
   }
 }
 
+@keyframes production-mobile-render {
+  0%, 14% {
+    -webkit-mask-position: 130% 0;
+    mask-position: 130% 0;
+  }
+  52% {
+    -webkit-mask-position: -30% 0;
+    mask-position: -30% 0;
+  }
+  66%, 100% {
+    -webkit-mask-position: -30% 0;
+    mask-position: -30% 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .creative-letter {
     animation: none !important;
@@ -66,5 +179,10 @@
     transform: none !important;
     color: var(--paper) !important;
     text-shadow: none !important;
+  }
+
+  .render-fill {
+    display: none !important;
+    animation: none !important;
   }
 }
