@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "gorshenin-ai-portfolio",
+  "main": "dist/server/index.js",
+  "compatibility_date": "2026-08-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "no_bundle": true,
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": ["**/*.js", "**/*.mjs"]
+    }
+  ],
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gorshenin-ai-portfolio-db",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BUCKET",
+      "bucket_name": "gorshenin-ai-portfolio-media"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
