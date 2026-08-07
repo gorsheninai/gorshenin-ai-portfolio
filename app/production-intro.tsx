@@ -7,7 +7,10 @@ type Lang = "ru" | "en";
 
 const introCopy = {
   ru: {
-    title: "Полный цикл AI-продакшна: концепция, визуальный стиль, персонажи, видео и финальный монтаж.",
+    headingMain: "КОНТЕНТ",
+    headingScript: "направления ↗",
+    headingA11y: "Контент — направления",
+    headingMeta: "AI / FILM / PRODUCT / SOCIAL",
     preview: "ВИЗУАЛЬНЫЙ ПРЕВЬЮ",
     note: "Наведи на направление",
     services: [
@@ -42,7 +45,10 @@ const introCopy = {
     ],
   },
   en: {
-    title: "Full-cycle AI production: concept, visual style, characters, video and final edit.",
+    headingMain: "CONTENT",
+    headingScript: "directions ↗",
+    headingA11y: "Content directions",
+    headingMeta: "AI / FILM / PRODUCT / SOCIAL",
     preview: "VISUAL PREVIEW",
     note: "Hover over a direction",
     services: [
@@ -120,7 +126,29 @@ export default function ProductionIntro() {
 
   return createPortal(
     <section className={`production-intro ${visible ? "is-visible" : ""}`} aria-labelledby="production-intro-title">
-      <h2 id="production-intro-title">{c.title}</h2>
+      <div className="production-title-block">
+        <div className="production-title-meta" aria-hidden="true">
+          <span>[ 01—04 ]</span>
+          <span>{c.headingMeta}</span>
+        </div>
+
+        <h2 id="production-intro-title" className="production-title" aria-label={c.headingA11y}>
+          <span className="production-title-mask" aria-hidden="true">
+            <span className="production-title-main">
+              {Array.from(c.headingMain).map((letter, index) => (
+                <span className="production-title-letter" style={{ "--letter-index": index } as React.CSSProperties} key={`${letter}-${index}`}>
+                  {letter}
+                </span>
+              ))}
+            </span>
+          </span>
+
+          <span className="production-title-script" aria-hidden="true">
+            <i className="production-title-stroke" />
+            <em>{c.headingScript}</em>
+          </span>
+        </h2>
+      </div>
 
       <div className="production-intro-grid">
         <div className={`production-preview production-preview-${active + 1}`}>
