@@ -7,7 +7,7 @@ type Lang = "ru" | "en";
 
 const introCopy = {
   ru: {
-    title: "Невозможные локации. Любые персонажи. Полный контроль над каждым кадром.",
+    title: "Полный цикл AI-продакшна: концепция, визуальный стиль, персонажи, видео и финальный монтаж.",
     preview: "ВИЗУАЛЬНЫЙ ПРЕВЬЮ",
     note: "Наведи на направление",
     services: [
@@ -42,7 +42,7 @@ const introCopy = {
     ],
   },
   en: {
-    title: "Impossible locations. Any character. Full control over every frame.",
+    title: "Full-cycle AI production: concept, visual style, characters, video and final edit.",
     preview: "VISUAL PREVIEW",
     note: "Hover over a direction",
     services: [
