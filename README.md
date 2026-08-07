@@ -1,5 +1,12 @@
 # vinext-starter
 
+## Deploy to Cloudflare
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/gorsheninai/gorshenin-ai-portfolio)
+
+Cloudflare builds the project from GitHub and automatically provisions the D1
+database and R2 media bucket declared in `wrangler.jsonc`.
+
 A clean full-stack starter running on
 [vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
 Drizzle support.
