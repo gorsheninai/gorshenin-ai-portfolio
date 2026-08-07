@@ -12,7 +12,11 @@ export default function SiteChrome() {
       <div className="gorshenin-lockup" aria-label="GORSHENIN PRODUCTION — контент без ограничений">
         <div className="gorshenin-lockup-title">
           <span>GORSHENIN</span>
-          <span>PRODUCTION</span>
+          <span className="production-print-word" aria-label="PRODUCTION">
+            <span className="production-print-red" aria-hidden="true">PRODUCTION</span>
+            <span className="production-print-blue" aria-hidden="true">PRODUCTION</span>
+            <span className="production-print-main">PRODUCTION</span>
+          </span>
         </div>
         <div className="gorshenin-lockup-sub">
           контент <span>[ без ограничений ]</span>
