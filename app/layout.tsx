@@ -7,6 +7,7 @@ import InteractiveBuildings from "./interactive-buildings";
 import ProductionIntro from "./production-intro";
 import "./globals.css";
 import "./production-header.css";
+import "./production-logo-effect.css";
 import "./hero-proximity.css";
 import "./site-enhancements.css";
 import "./production-intro.css";
