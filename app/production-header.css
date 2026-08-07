@@ -194,6 +194,10 @@
   display: none;
 }
 
+.work > .section-head {
+  display: none !important;
+}
+
 @media (max-width: 900px) {
   .gorshenin-lockup {
     min-width: 430px;
