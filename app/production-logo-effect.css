@@ -1,0 +1,23 @@
+.gorshenin-lockup-title span:last-child {
+  position: relative;
+  color: #f1f0ea;
+  text-shadow:
+    -3px 0 0 #ff6f61,
+    3px 0 0 #58c7ff;
+}
+
+@media (max-width: 900px) {
+  .gorshenin-lockup-title span:last-child {
+    text-shadow:
+      -2.5px 0 0 #ff6f61,
+      2.5px 0 0 #58c7ff;
+  }
+}
+
+@media (max-width: 760px) {
+  .gorshenin-lockup-title span:last-child {
+    text-shadow:
+      -1.75px 0 0 #ff6f61,
+      1.75px 0 0 #58c7ff;
+  }
+}
