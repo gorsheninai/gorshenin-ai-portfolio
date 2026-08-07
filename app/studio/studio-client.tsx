@@ -49,7 +49,7 @@ export default function StudioClient({ userName }: { userName: string }) {
     setBusy(true);
     setMessage("");
     const form = event.currentTarget;
-    const response = await fetch("/api/media", { method: "POST", body: new FormData(form) });
+    const response = await fetch("/api/admin/media", { method: "POST", body: new FormData(form) });
     const data = await response.json();
     setBusy(false);
     if (!response.ok) {
@@ -63,7 +63,7 @@ export default function StudioClient({ userName }: { userName: string }) {
 
   async function remove(id: string, title: string) {
     if (!window.confirm(`Удалить «${title}»?`)) return;
-    const response = await fetch(`/api/media/${id}`, { method: "DELETE" });
+    const response = await fetch(`/api/admin/media/${id}`, { method: "DELETE" });
     const data = await response.json();
     if (!response.ok) {
       setMessage(data.error ?? "Не удалось удалить материал.");
