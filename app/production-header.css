@@ -45,9 +45,9 @@
 }
 
 .gorshenin-lockup-title span:last-child {
-  font-size: 18px;
+  font-size: 32px;
   font-weight: 560;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
 }
 
 .gorshenin-lockup-sub {
@@ -164,7 +164,7 @@
 }
 
 .hero h1 > span:nth-child(3)::after {
-  content: "ОТ ИДЕИ ДО ВИДЕО.";
+  content: "ОТ ИДЕИ ДО ВИДЕО";
   display: block;
   margin-top: .06em;
   font-family: Georgia, serif;
@@ -196,7 +196,7 @@
 
 @media (max-width: 900px) {
   .gorshenin-lockup {
-    min-width: 330px;
+    min-width: 430px;
   }
 
   .gorshenin-lockup-title span:first-child {
@@ -204,7 +204,7 @@
   }
 
   .gorshenin-lockup-title span:last-child {
-    font-size: 14px;
+    font-size: 25px;
   }
 
   .gorshenin-telegram {
@@ -239,7 +239,7 @@
   }
 
   .gorshenin-lockup-title span:last-child {
-    font-size: 10px;
+    font-size: 18px;
   }
 
   .gorshenin-lockup-sub {
