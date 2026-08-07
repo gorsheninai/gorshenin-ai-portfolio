@@ -56,13 +56,11 @@
 .render-outline {
   color: transparent;
   -webkit-text-stroke: 1px var(--paper);
-  text-stroke: 1px var(--paper);
 }
 
 .render-fill {
   --render-x: 50%;
   --render-y: 50%;
-  --render-strength: 0;
   position: absolute;
   inset: 0;
   opacity: 0;
@@ -94,20 +92,9 @@
     rgba(0,0,0,.45) 76%,
     transparent 100%
   );
-  filter: drop-shadow(0 0 calc(6px + 12px * var(--render-strength)) rgba(216,255,54,.2));
+  filter: drop-shadow(0 0 14px rgba(216,255,54,.22));
   will-change: opacity, mask-image, -webkit-mask-image;
   transition: opacity 120ms ease-out;
-}
-
-.render-word::after {
-  content: "";
-  position: absolute;
-  inset: -8% -2%;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(216,255,54,.06), transparent);
-  transform: translateX(-120%);
 }
 
 @media (max-width: 760px) {
