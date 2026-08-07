@@ -7,7 +7,6 @@ type Lang = "ru" | "en";
 
 const introCopy = {
   ru: {
-    kicker: "[ ТАМ, ГДЕ ОБЫЧНОЙ СЪЁМКИ УЖЕ НЕДОСТАТОЧНО ]",
     title: "Невозможные локации. Любые персонажи. Полный контроль над каждым кадром.",
     preview: "ВИЗУАЛЬНЫЙ ПРЕВЬЮ",
     note: "Наведи на направление",
@@ -43,7 +42,6 @@ const introCopy = {
     ],
   },
   en: {
-    kicker: "[ WHERE A TRADITIONAL SHOOT IS NO LONGER ENOUGH ]",
     title: "Impossible locations. Any character. Full control over every frame.",
     preview: "VISUAL PREVIEW",
     note: "Hover over a direction",
@@ -122,11 +120,6 @@ export default function ProductionIntro() {
 
   return createPortal(
     <section className={`production-intro ${visible ? "is-visible" : ""}`} aria-labelledby="production-intro-title">
-      <div className="production-intro-top">
-        <p>{c.kicker}</p>
-        <span>GORSHENIN PRODUCTION / 2026</span>
-      </div>
-
       <h2 id="production-intro-title">{c.title}</h2>
 
       <div className="production-intro-grid">
