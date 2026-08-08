@@ -152,26 +152,36 @@ export default function PortfolioShowcase() {
         const stageTop = realEstateStage.getBoundingClientRect().top;
         const schoolsTop = schoolsStage.getBoundingClientRect().top;
         const clamp = (value: number) => Math.max(0, Math.min(1, value));
-        const entryRaw = clamp((viewport - stageTop) / (viewport * .76));
-        const entry = 1 - Math.pow(1 - entryRaw, 3);
-        const contentRaw = clamp((entryRaw - .14) / .68);
-        const content = 1 - Math.pow(1 - contentRaw, 3);
+        const easeOut = (value: number) => 1 - Math.pow(1 - value, 3);
+        const portalRaw = clamp((viewport - stageTop) / viewport);
+        const portal = portalRaw * portalRaw * (3 - 2 * portalRaw);
+        const copy = easeOut(clamp((portalRaw - .08) / .28));
+        const glow = easeOut(clamp((portalRaw - .16) / .42));
+        const ground = easeOut(clamp((portalRaw - .24) / .44));
+        const buildingOne = easeOut(clamp((portalRaw - .28) / .42));
+        const buildingTwo = easeOut(clamp((portalRaw - .36) / .42));
+        const buildingThree = easeOut(clamp((portalRaw - .44) / .42));
         const cover = clamp((viewport - schoolsTop) / viewport);
+        const finalRadius = Math.max(28, Math.min(54, window.innerWidth * .03));
 
-        const entryScale = .955 + entry * .045;
-        const entryRotate = (1 - entry) * 1.35;
-        const entryShift = (1 - entry) * 4.2;
-        const entryBrightness = .82 + entry * .18;
+        realEstate.style.setProperty("--portal-clip", `${((1 - portal) * 100).toFixed(2)}%`);
+        realEstate.style.setProperty("--portal-radius", `${(finalRadius + (1 - portal) * 46).toFixed(2)}px`);
+        realEstate.style.setProperty("--case-scale", (1 - cover * .042).toFixed(4));
+        realEstate.style.setProperty("--case-rotate", `${(-cover * .72).toFixed(3)}deg`);
+        realEstate.style.setProperty("--case-shift", `${(-cover * 2.8).toFixed(2)}vh`);
+        realEstate.style.setProperty("--case-brightness", (1 - cover * .28).toFixed(4));
+        realEstate.style.setProperty("--entry-copy-opacity", copy.toFixed(4));
+        realEstate.style.setProperty("--entry-copy-shift", `${((1 - copy) * 3.4).toFixed(2)}vh`);
+        realEstate.style.setProperty("--entry-glow-opacity", glow.toFixed(4));
+        realEstate.style.setProperty("--entry-glow-scale", (.72 + glow * .28).toFixed(4));
+        realEstate.style.setProperty("--entry-ground-opacity", ground.toFixed(4));
 
-        realEstate.style.setProperty("--case-scale", (entryScale * (1 - cover * .042)).toFixed(4));
-        realEstate.style.setProperty("--case-rotate", `${(entryRotate - cover * .72).toFixed(3)}deg`);
-        realEstate.style.setProperty("--case-shift", `${(entryShift - cover * 2.8).toFixed(2)}vh`);
-        realEstate.style.setProperty("--case-brightness", (entryBrightness * (1 - cover * .28)).toFixed(4));
-        realEstate.style.setProperty("--entry-copy-opacity", content.toFixed(4));
-        realEstate.style.setProperty("--entry-copy-shift", `${((1 - content) * 3.4).toFixed(2)}vh`);
-        realEstate.style.setProperty("--entry-city-opacity", clamp((contentRaw - .08) / .92).toFixed(4));
-        realEstate.style.setProperty("--entry-city-shift", `${((1 - content) * 7.5).toFixed(2)}vh`);
-        realEstate.style.setProperty("--entry-city-scale", (.94 + content * .06).toFixed(4));
+        [buildingOne, buildingTwo, buildingThree].forEach((progress, index) => {
+          const number = index + 1;
+          realEstate.style.setProperty(`--building-${number}-opacity`, progress.toFixed(4));
+          realEstate.style.setProperty(`--building-${number}-shift`, `${((1 - progress) * 18).toFixed(2)}vh`);
+          realEstate.style.setProperty(`--building-${number}-scale`, (.66 + progress * .34).toFixed(4));
+        });
       });
     };
 
