@@ -220,11 +220,11 @@ export default function PortfolioShowcase() {
 
   return createPortal(
     <>
-      <section className={styles.casesIntro} aria-labelledby="cases-title">
-        <h2 id="cases-title">КЕЙСЫ</h2>
-      </section>
-
       <div className={styles.caseDeck}>
+      <header className={styles.casesHeader}>
+        <h2 id="cases-title">КЕЙСЫ</h2>
+        <span>01—02</span>
+      </header>
       <section className={styles.realEstateStage}>
         <div className={styles.realEstate} ref={realEstateFrameRef}>
         <div className={styles.sectionTop}>

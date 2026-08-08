@@ -4,8 +4,8 @@
 }
 
 .production-intro {
-  min-height: 100svh;
-  padding: 38px 2.2vw 8vw;
+  min-height: 0;
+  padding: 38px 2.2vw 30px;
   background:
     radial-gradient(circle at 12% 88%, rgba(216, 255, 54, .28), transparent 24%),
     #ece9e1;
@@ -282,7 +282,7 @@
 
 @media (max-width: 980px) {
   .production-intro {
-    padding: 30px 18px 90px;
+    padding: 30px 18px 30px;
   }
 
   .production-intro > h2 {
@@ -310,7 +310,7 @@
 @media (max-width: 760px) {
   .production-intro {
     min-height: auto;
-    padding: 26px 18px 74px;
+    padding: 26px 18px 24px;
   }
 
   .production-intro-top {
