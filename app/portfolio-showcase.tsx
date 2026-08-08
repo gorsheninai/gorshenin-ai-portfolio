@@ -91,10 +91,8 @@ export default function PortfolioShowcase() {
   const [armedBuilding, setArmedBuilding] = useState<number | null>(null);
   const [armedSchool, setArmedSchool] = useState<number | null>(null);
   const [selectedCase, setSelectedCase] = useState<CaseSelection>(null);
-  const realEstateStageRef = useRef<HTMLElement | null>(null);
   const realEstateFrameRef = useRef<HTMLDivElement | null>(null);
   const schoolsStageRef = useRef<HTMLElement | null>(null);
-  const schoolsFrameRef = useRef<HTMLDivElement | null>(null);
   const coarsePointerRef = useRef(false);
 
   useEffect(() => {
@@ -138,30 +136,19 @@ export default function PortfolioShowcase() {
     if (!host) return;
     let frame = 0;
 
-    const applyProgress = (stage: HTMLElement | null, scene: HTMLElement | null) => {
-      if (!stage || !scene) return;
-      const rect = stage.getBoundingClientRect();
-      const distance = Math.max(1, stage.offsetHeight - window.innerHeight);
-      const progress = Math.max(0, Math.min(1, -rect.top / distance));
-      const storyOpacity = Math.max(0, 1 - progress * 2.45);
-      const contentOpacity = Math.max(0, Math.min(1, (progress - .08) / .34));
-      const contentY = Math.max(0, 16 - progress * 38);
-      const storyY = -progress * 18;
-      const contentScale = .965 + contentOpacity * .035;
-
-      scene.style.setProperty("--scene-progress", progress.toFixed(4));
-      scene.style.setProperty("--story-opacity", storyOpacity.toFixed(4));
-      scene.style.setProperty("--content-opacity", contentOpacity.toFixed(4));
-      scene.style.setProperty("--content-y", `${contentY.toFixed(2)}vh`);
-      scene.style.setProperty("--story-y", `${storyY.toFixed(2)}vh`);
-      scene.style.setProperty("--content-scale", contentScale.toFixed(4));
-    };
-
     const update = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        applyProgress(realEstateStageRef.current, realEstateFrameRef.current);
-        applyProgress(schoolsStageRef.current, schoolsFrameRef.current);
+        const realEstate = realEstateFrameRef.current;
+        const schoolsStage = schoolsStageRef.current;
+        if (!realEstate || !schoolsStage) return;
+
+        const schoolsTop = schoolsStage.getBoundingClientRect().top;
+        const cover = Math.max(0, Math.min(1, (window.innerHeight - schoolsTop) / window.innerHeight));
+        realEstate.style.setProperty("--case-scale", (1 - cover * .042).toFixed(4));
+        realEstate.style.setProperty("--case-rotate", `${(-cover * .72).toFixed(3)}deg`);
+        realEstate.style.setProperty("--case-shift", `${(-cover * 2.8).toFixed(2)}vh`);
+        realEstate.style.setProperty("--case-brightness", (1 - cover * .28).toFixed(4));
       });
     };
 
@@ -233,15 +220,15 @@ export default function PortfolioShowcase() {
 
   return createPortal(
     <>
-      <section className={styles.realEstateStage} ref={realEstateStageRef}>
+      <section className={styles.casesIntro} aria-labelledby="cases-title">
+        <h2 id="cases-title">КЕЙСЫ</h2>
+      </section>
+
+      <div className={styles.caseDeck}>
+      <section className={styles.realEstateStage}>
         <div className={styles.realEstate} ref={realEstateFrameRef}>
-        <div className={styles.sectionStory} aria-hidden="true">
-          <span>ПРОСТРАНСТВО</span>
-          <strong>СТАНОВИТСЯ</strong>
-          <em>ИСТОРИЕЙ</em>
-        </div>
         <div className={styles.sectionTop}>
-          <p>01 / SELECTED FIELD</p>
+          <p>01 / КЕЙСЫ</p>
           <h2 id="real-estate-title">НЕДВИЖИМОСТЬ</h2>
           <p>НАВЕДИ НА ЗДАНИЕ</p>
         </div>
@@ -296,14 +283,9 @@ export default function PortfolioShowcase() {
       </section>
 
       <section className={styles.schoolsStage} ref={schoolsStageRef}>
-        <div className={styles.schools} ref={schoolsFrameRef}>
-        <div className={`${styles.sectionStory} ${styles.schoolStory}`} aria-hidden="true">
-          <span>КОНТЕНТ</span>
-          <strong>СТАНОВИТСЯ</strong>
-          <em>СИСТЕМОЙ</em>
-        </div>
+        <div className={styles.schools}>
         <div className={styles.schoolHeading}>
-          <p>02 / CLIENT SYSTEMS</p>
+          <p>02 / КЕЙСЫ</p>
           <h2 id="schools-title">ОНЛАЙН-ШКОЛЫ</h2>
           <p>HOVER → VIDEO / CLICK → CASE</p>
         </div>
@@ -356,6 +338,7 @@ export default function PortfolioShowcase() {
         </div>
         </div>
       </section>
+      </div>
 
       {selectedCase && (
         <div className={styles.modalBackdrop} onMouseDown={() => setSelectedCase(null)}>
