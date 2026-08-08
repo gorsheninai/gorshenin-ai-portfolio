@@ -6,28 +6,12 @@
   background: #0b0b0b;
 }
 
-.casesHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
-  padding: 30px 2.2vw 24px;
-  overflow: hidden;
-  background: #0b0b0b;
-  color: #f4f1e9;
+:global(.work.portfolio-showcase-mounted) {
+  padding-top: 0;
 }
 
-.casesHeader h2 {
-  margin: 0;
-  font: 900 clamp(4rem, 8.5vw, 10rem)/.72 var(--font-geist-sans), Arial, sans-serif;
-  letter-spacing: -.085em;
-}
-
-.casesHeader span {
-  padding-bottom: 8px;
-  font: 9px/1 var(--font-geist-mono), monospace;
-  letter-spacing: .12em;
-  opacity: .56;
+:global(.work.portfolio-showcase-mounted > .projects) {
+  margin-top: 0;
 }
 
 .caseDeck {
@@ -614,18 +598,6 @@
 @media (max-width: 760px) {
   .host {
     margin-left: calc(50% - 50vw);
-  }
-
-  .casesHeader {
-    padding: 22px 18px 16px;
-  }
-
-  .casesHeader h2 {
-    font-size: 17vw;
-  }
-
-  .casesHeader span {
-    padding-bottom: 4px;
   }
 
   .caseDeck {

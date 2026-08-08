@@ -98,12 +98,14 @@ export default function PortfolioShowcase() {
   useEffect(() => {
     const projects = document.querySelector<HTMLElement>(".work .projects");
     const firstProject = projects?.querySelector<HTMLElement>(".project");
+    const work = projects?.closest<HTMLElement>(".work");
     if (!projects || !firstProject) return;
 
     const mount = document.createElement("div");
     mount.className = styles.host;
     mount.dataset.portfolioShowcase = "true";
     projects.insertBefore(mount, firstProject);
+    work?.classList.add("portfolio-showcase-mounted");
 
     const previousDisplay = firstProject.style.display;
     firstProject.style.display = "none";
@@ -112,6 +114,7 @@ export default function PortfolioShowcase() {
     return () => {
       cancelAnimationFrame(mountFrame);
       firstProject.style.display = previousDisplay;
+      work?.classList.remove("portfolio-showcase-mounted");
       mount.remove();
       setHost(null);
     };
@@ -221,10 +224,6 @@ export default function PortfolioShowcase() {
   return createPortal(
     <>
       <div className={styles.caseDeck}>
-      <header className={styles.casesHeader}>
-        <h2 id="cases-title">КЕЙСЫ</h2>
-        <span>01—02</span>
-      </header>
       <section className={styles.realEstateStage}>
         <div className={styles.realEstate} ref={realEstateFrameRef}>
         <div className={styles.sectionTop}>
