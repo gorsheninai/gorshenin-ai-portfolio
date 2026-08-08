@@ -48,6 +48,11 @@
   --case-rotate: 0deg;
   --case-shift: 0vh;
   --case-brightness: 1;
+  --entry-copy-opacity: 1;
+  --entry-copy-shift: 0vh;
+  --entry-city-opacity: 1;
+  --entry-city-shift: 0vh;
+  --entry-city-scale: 1;
   position: relative;
   transform: translateY(var(--case-shift)) rotate(var(--case-rotate)) scale(var(--case-scale));
   transform-origin: 50% 8%;
@@ -125,10 +130,23 @@
   letter-spacing: -.055em;
 }
 
+.realEstate .sectionTop {
+  opacity: var(--entry-copy-opacity);
+  transform: translateY(var(--entry-copy-shift));
+  will-change: opacity, transform;
+}
+
 .city {
   position: absolute;
   inset: 0;
   z-index: 2;
+}
+
+.realEstate .city {
+  opacity: var(--entry-city-opacity);
+  transform: translateY(var(--entry-city-shift)) scale(var(--entry-city-scale));
+  transform-origin: 50% 100%;
+  will-change: opacity, transform;
 }
 
 .skyGlow {
@@ -619,8 +637,8 @@
     height: auto;
     min-height: 92svh;
     border-radius: 24px 24px 0 0;
-    transform: none;
-    filter: none;
+    transform: translateY(var(--case-shift)) rotate(var(--case-rotate)) scale(var(--case-scale));
+    filter: brightness(var(--case-brightness));
   }
 
   .schools {
@@ -635,8 +653,6 @@
     grid-template-columns: 1fr auto;
     padding-left: 18px;
     padding-right: 18px;
-    opacity: 1;
-    transform: none;
   }
 
   .sectionTop p:last-child,
@@ -803,6 +819,7 @@
   .schoolHeading,
   .city,
   .schoolPanels {
+    opacity: 1;
     transform: none;
   }
 

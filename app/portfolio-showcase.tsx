@@ -91,6 +91,7 @@ export default function PortfolioShowcase() {
   const [armedBuilding, setArmedBuilding] = useState<number | null>(null);
   const [armedSchool, setArmedSchool] = useState<number | null>(null);
   const [selectedCase, setSelectedCase] = useState<CaseSelection>(null);
+  const realEstateStageRef = useRef<HTMLElement | null>(null);
   const realEstateFrameRef = useRef<HTMLDivElement | null>(null);
   const schoolsStageRef = useRef<HTMLElement | null>(null);
   const coarsePointerRef = useRef(false);
@@ -142,16 +143,35 @@ export default function PortfolioShowcase() {
     const update = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        const realEstateStage = realEstateStageRef.current;
         const realEstate = realEstateFrameRef.current;
         const schoolsStage = schoolsStageRef.current;
-        if (!realEstate || !schoolsStage) return;
+        if (!realEstateStage || !realEstate || !schoolsStage) return;
 
+        const viewport = window.innerHeight;
+        const stageTop = realEstateStage.getBoundingClientRect().top;
         const schoolsTop = schoolsStage.getBoundingClientRect().top;
-        const cover = Math.max(0, Math.min(1, (window.innerHeight - schoolsTop) / window.innerHeight));
-        realEstate.style.setProperty("--case-scale", (1 - cover * .042).toFixed(4));
-        realEstate.style.setProperty("--case-rotate", `${(-cover * .72).toFixed(3)}deg`);
-        realEstate.style.setProperty("--case-shift", `${(-cover * 2.8).toFixed(2)}vh`);
-        realEstate.style.setProperty("--case-brightness", (1 - cover * .28).toFixed(4));
+        const clamp = (value: number) => Math.max(0, Math.min(1, value));
+        const entryRaw = clamp((viewport - stageTop) / (viewport * .76));
+        const entry = 1 - Math.pow(1 - entryRaw, 3);
+        const contentRaw = clamp((entryRaw - .14) / .68);
+        const content = 1 - Math.pow(1 - contentRaw, 3);
+        const cover = clamp((viewport - schoolsTop) / viewport);
+
+        const entryScale = .955 + entry * .045;
+        const entryRotate = (1 - entry) * 1.35;
+        const entryShift = (1 - entry) * 4.2;
+        const entryBrightness = .82 + entry * .18;
+
+        realEstate.style.setProperty("--case-scale", (entryScale * (1 - cover * .042)).toFixed(4));
+        realEstate.style.setProperty("--case-rotate", `${(entryRotate - cover * .72).toFixed(3)}deg`);
+        realEstate.style.setProperty("--case-shift", `${(entryShift - cover * 2.8).toFixed(2)}vh`);
+        realEstate.style.setProperty("--case-brightness", (entryBrightness * (1 - cover * .28)).toFixed(4));
+        realEstate.style.setProperty("--entry-copy-opacity", content.toFixed(4));
+        realEstate.style.setProperty("--entry-copy-shift", `${((1 - content) * 3.4).toFixed(2)}vh`);
+        realEstate.style.setProperty("--entry-city-opacity", clamp((contentRaw - .08) / .92).toFixed(4));
+        realEstate.style.setProperty("--entry-city-shift", `${((1 - content) * 7.5).toFixed(2)}vh`);
+        realEstate.style.setProperty("--entry-city-scale", (.94 + content * .06).toFixed(4));
       });
     };
 
@@ -224,7 +244,7 @@ export default function PortfolioShowcase() {
   return createPortal(
     <>
       <div className={styles.caseDeck}>
-      <section className={styles.realEstateStage}>
+      <section className={styles.realEstateStage} ref={realEstateStageRef}>
         <div className={styles.realEstate} ref={realEstateFrameRef}>
         <div className={styles.sectionTop}>
           <p>01 / КЕЙСЫ</p>
