@@ -7,10 +7,7 @@ type Lang = "ru" | "en";
 
 const introCopy = {
   ru: {
-    headingMain: "КОНТЕНТ",
-    headingScript: "направления ↗",
-    headingA11y: "Контент — направления",
-    headingMeta: "AI / FILM / PRODUCT / SOCIAL",
+    heading: "КОНТЕНТ НАПРАВЛЕНИЯ",
     preview: "ВИЗУАЛЬНЫЙ ПРЕВЬЮ",
     note: "Наведи на направление",
     services: [
@@ -45,10 +42,7 @@ const introCopy = {
     ],
   },
   en: {
-    headingMain: "CONTENT",
-    headingScript: "directions ↗",
-    headingA11y: "Content directions",
-    headingMeta: "AI / FILM / PRODUCT / SOCIAL",
+    heading: "CONTENT DIRECTIONS",
     preview: "VISUAL PREVIEW",
     note: "Hover over a direction",
     services: [
@@ -127,26 +121,8 @@ export default function ProductionIntro() {
   return createPortal(
     <section className={`production-intro ${visible ? "is-visible" : ""}`} aria-labelledby="production-intro-title">
       <div className="production-title-block">
-        <div className="production-title-meta" aria-hidden="true">
-          <span>[ 01—04 ]</span>
-          <span>{c.headingMeta}</span>
-        </div>
-
-        <h2 id="production-intro-title" className="production-title" aria-label={c.headingA11y}>
-          <span className="production-title-mask" aria-hidden="true">
-            <span className="production-title-main">
-              {Array.from(c.headingMain).map((letter, index) => (
-                <span className="production-title-letter" key={`${letter}-${index}`}>
-                  {letter}
-                </span>
-              ))}
-            </span>
-          </span>
-
-          <span className="production-title-script" aria-hidden="true">
-            <i className="production-title-stroke" />
-            <em>{c.headingScript}</em>
-          </span>
+        <h2 id="production-intro-title" className="production-title">
+          {c.heading}
         </h2>
       </div>
 
