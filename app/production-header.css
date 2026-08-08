@@ -27,6 +27,22 @@
   text-align: center;
   text-transform: uppercase;
   pointer-events: auto;
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+  transform-origin: top center;
+  transition:
+    opacity .36s ease,
+    filter .48s ease,
+    transform .5s cubic-bezier(.2,.8,.2,1);
+  will-change: opacity, filter, transform;
+}
+
+.gorshenin-chrome.is-past-hero .gorshenin-lockup {
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateY(-18px) scale(.985);
+  pointer-events: none;
 }
 
 .gorshenin-lockup-title {
@@ -240,6 +256,11 @@
     min-width: 0;
     gap: 4px;
     padding: 0;
+    transform-origin: top left;
+  }
+
+  .gorshenin-chrome.is-past-hero .gorshenin-lockup {
+    transform: translateY(-12px) scale(.985);
   }
 
   .gorshenin-lockup-title {
@@ -308,5 +329,11 @@
   .hero-bottom p::after {
     font-size: 14px;
     max-width: 76vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gorshenin-lockup {
+    transition: none !important;
   }
 }
