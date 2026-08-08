@@ -282,6 +282,13 @@ export default function PortfolioShowcase() {
                   </div>
                   <div className={styles.facade} aria-hidden="true" />
                   <div className={styles.facadeShade} aria-hidden="true" />
+                  <div className={styles.architecture} aria-hidden="true">
+                    <span className={styles.architectureRoof} />
+                    <span className={styles.architectureBalconies} />
+                    <span className={styles.architectureSide} />
+                    <span className={styles.architectureEntrance} />
+                    <span className={styles.architectureLights} />
+                  </div>
                   <div className={styles.buildingMeta}>
                     <span>{building.number}</span>
                     <strong>{building.title}</strong>

@@ -275,18 +275,18 @@
 }
 
 .buildingOne {
-  --building-height: 39%;
-  clip-path: polygon(0 8%, 28% 0, 100% 9%, 100% 100%, 0 100%);
+  --building-height: 43%;
+  clip-path: polygon(0 25%, 18% 25%, 18% 17%, 39% 17%, 39% 9%, 61% 9%, 61% 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .buildingTwo {
-  --building-height: 52%;
-  clip-path: polygon(4% 0, 82% 8%, 100% 18%, 100% 100%, 0 100%, 0 10%);
+  --building-height: 61%;
+  clip-path: polygon(7% 13%, 15% 3%, 63% 3%, 70% 0, 78% 3%, 84% 10%, 95% 10%, 100% 16%, 100% 100%, 0 100%, 0 21%);
 }
 
 .buildingThree {
-  --building-height: 35%;
-  clip-path: polygon(0 14%, 18% 5%, 76% 8%, 100% 0, 100% 100%, 0 100%);
+  --building-height: 41%;
+  clip-path: polygon(0 24%, 12% 24%, 28% 7%, 43% 24%, 65% 24%, 79% 10%, 92% 24%, 100% 24%, 100% 100%, 0 100%);
 }
 
 .buildingActive {
@@ -317,6 +317,27 @@
 .buildingMedia {
   z-index: 0;
   background: #111;
+}
+
+.buildingMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .42;
+  transition: opacity .55s ease;
+}
+
+.buildingOne .buildingMedia::after {
+  background: linear-gradient(145deg, rgba(44, 57, 42, .78), rgba(130, 102, 64, .22));
+}
+
+.buildingTwo .buildingMedia::after {
+  background: linear-gradient(150deg, rgba(23, 39, 46, .82), rgba(68, 95, 99, .26));
+}
+
+.buildingThree .buildingMedia::after {
+  background: linear-gradient(150deg, rgba(74, 39, 29, .72), rgba(124, 73, 46, .26));
 }
 
 .previewVideo {
@@ -361,18 +382,25 @@
   transform-origin: bottom;
 }
 
+.buildingOne .facade {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 16%, rgba(237, 224, 190, .62) 16% 17.5%),
+    repeating-linear-gradient(90deg, rgba(222, 211, 178, .48) 0 1.2%, transparent 1.2% 12.5%),
+    rgba(38, 54, 43, .58);
+}
+
 .buildingTwo .facade {
   background:
-    repeating-linear-gradient(90deg, rgba(222, 220, 202, .72) 0 1.1%, transparent 1.1% 9.4%),
-    repeating-linear-gradient(0deg, rgba(201, 111, 44, .72) 0 1.35%, transparent 1.35% 8.8%),
-    rgba(18, 35, 34, .7);
+    repeating-linear-gradient(90deg, rgba(201, 220, 218, .68) 0 1.05%, transparent 1.05% 8.4%),
+    repeating-linear-gradient(0deg, rgba(111, 145, 148, .48) 0 1.15%, transparent 1.15% 7.8%),
+    linear-gradient(90deg, rgba(10, 26, 31, .76), rgba(26, 48, 53, .62));
 }
 
 .buildingThree .facade {
   background:
-    repeating-linear-gradient(90deg, rgba(241, 229, 193, .72) 0 1.7%, transparent 1.7% 13.4%),
-    repeating-linear-gradient(0deg, rgba(219, 141, 59, .7) 0 1.45%, transparent 1.45% 12%),
-    rgba(16, 31, 30, .68);
+    repeating-linear-gradient(0deg, rgba(190, 118, 78, .36) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(90deg, rgba(232, 205, 166, .54) 0 1.2%, transparent 1.2% 14%),
+    rgba(87, 45, 32, .62);
 }
 
 .facadeShade {
@@ -388,6 +416,205 @@
 
 .buildingActive .facadeShade {
   opacity: .34;
+}
+
+.buildingActive .buildingMedia::after {
+  opacity: .08;
+}
+
+.architecture,
+.architecture > span {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.architecture {
+  inset: 0;
+  z-index: 3;
+  transition: opacity .55s ease;
+}
+
+.architectureRoof,
+.architectureBalconies,
+.architectureSide,
+.architectureEntrance,
+.architectureLights {
+  transition: opacity .55s ease, transform .7s cubic-bezier(.16,.84,.22,1);
+}
+
+.buildingOne .architectureRoof {
+  inset: 0;
+  background:
+    linear-gradient(#f0dfb7 0 0) 61% 0 / 39% 3px no-repeat,
+    linear-gradient(#f0dfb7 0 0) 39% 9% / 22% 3px no-repeat,
+    linear-gradient(#f0dfb7 0 0) 18% 17% / 21% 3px no-repeat,
+    linear-gradient(#f0dfb7 0 0) 0 25% / 18% 3px no-repeat;
+  opacity: .9;
+}
+
+.buildingOne .architectureBalconies {
+  inset: 27% 4% 19%;
+  border-left: 3px solid rgba(239, 226, 193, .68);
+  border-right: 3px solid rgba(239, 226, 193, .42);
+  background: repeating-linear-gradient(0deg, transparent 0 18%, rgba(239, 226, 193, .82) 18% 20%);
+  box-shadow: inset 0 -3px 0 rgba(239, 226, 193, .72);
+}
+
+.buildingOne .architectureEntrance {
+  left: 8%;
+  bottom: 0;
+  width: 13%;
+  height: 18%;
+  border: 2px solid rgba(239, 226, 193, .72);
+  border-bottom: 0;
+  border-radius: 45% 45% 0 0;
+  background: rgba(9, 17, 14, .76);
+}
+
+.buildingOne .architectureSide {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 5.5%;
+  background: linear-gradient(90deg, rgba(12, 22, 17, .08), rgba(5, 10, 8, .68));
+  border-left: 1px solid rgba(240, 223, 182, .36);
+}
+
+.buildingTwo .architectureRoof {
+  left: 14%;
+  right: 21%;
+  top: 3%;
+  height: 9%;
+  border-top: 3px solid rgba(190, 221, 221, .86);
+  border-bottom: 2px solid rgba(190, 221, 221, .42);
+  background: repeating-linear-gradient(90deg, rgba(190,221,221,.62) 0 2px, transparent 2px 14%);
+}
+
+.buildingTwo .architectureRoof::before,
+.buildingTwo .architectureRoof::after {
+  content: "";
+  position: absolute;
+  top: -13px;
+  width: 2px;
+  height: 14px;
+  background: rgba(190, 221, 221, .7);
+}
+
+.buildingTwo .architectureRoof::before { left: 28%; }
+.buildingTwo .architectureRoof::after { right: 22%; height: 22px; top: -21px; }
+
+.buildingTwo .architectureBalconies {
+  inset: 17% 5% 14%;
+  border-top: 2px solid rgba(180, 213, 215, .52);
+  background:
+    repeating-linear-gradient(90deg, rgba(193, 221, 220, .74) 0 1.5%, transparent 1.5% 9%),
+    repeating-linear-gradient(0deg, transparent 0 9%, rgba(114, 151, 155, .58) 9% 10%);
+}
+
+.buildingTwo .architectureEntrance {
+  left: 42%;
+  bottom: 0;
+  width: 17%;
+  height: 14%;
+  border: 2px solid rgba(192, 221, 220, .7);
+  border-bottom: 0;
+  background: linear-gradient(90deg, rgba(7,17,21,.86) 0 47%, rgba(190,221,221,.55) 48% 52%, rgba(7,17,21,.86) 53%);
+  box-shadow: 0 -7px 0 -4px rgba(192, 221, 220, .72);
+}
+
+.buildingTwo .architectureSide {
+  top: 10%;
+  right: 0;
+  bottom: 0;
+  width: 6%;
+  background: linear-gradient(90deg, rgba(25, 47, 53, .12), rgba(4, 13, 17, .78));
+  border-left: 2px solid rgba(163, 197, 199, .4);
+}
+
+.buildingThree .architectureRoof {
+  inset: 0;
+}
+
+.buildingThree .architectureRoof::before,
+.buildingThree .architectureRoof::after {
+  content: "";
+  position: absolute;
+  top: 15.4%;
+  width: 23%;
+  height: 3px;
+  background: rgba(243, 211, 168, .86);
+  transform-origin: center;
+}
+
+.buildingThree .architectureRoof::before {
+  left: 10.8%;
+  transform: rotate(-43deg);
+}
+
+.buildingThree .architectureRoof::after {
+  right: 8.5%;
+  transform: rotate(39deg);
+}
+
+.buildingThree .architectureBalconies {
+  inset: 27% 4% 16%;
+  border-top: 3px solid rgba(242, 210, 167, .62);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 11%, rgba(242, 210, 167, .56) 11% 12.5%),
+    repeating-linear-gradient(0deg, transparent 0 20%, rgba(196, 122, 79, .62) 20% 22%);
+}
+
+.buildingThree .architectureEntrance {
+  left: 40%;
+  bottom: -1px;
+  width: 21%;
+  height: 29%;
+  border: 3px solid rgba(242, 210, 167, .76);
+  border-bottom: 0;
+  border-radius: 52% 52% 0 0;
+  background: radial-gradient(circle at 50% 78%, rgba(191, 112, 62, .18), transparent 30%), rgba(10, 12, 11, .88);
+  box-shadow: 0 0 22px rgba(5, 7, 6, .52);
+}
+
+.buildingThree .architectureSide {
+  top: 24%;
+  right: 0;
+  bottom: 0;
+  width: 5%;
+  background: linear-gradient(90deg, rgba(84,42,30,.1), rgba(31,13,9,.72));
+  border-left: 1px solid rgba(239, 203, 156, .34);
+}
+
+.architectureLights {
+  inset: 0;
+  opacity: .72;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 16% 43%, rgba(255, 206, 116, .9) 0 2px, transparent 3px),
+    radial-gradient(circle at 34% 57%, rgba(255, 220, 151, .72) 0 2px, transparent 3px),
+    radial-gradient(circle at 58% 34%, rgba(255, 205, 110, .74) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 62%, rgba(255, 218, 144, .82) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 45%, rgba(255, 196, 94, .7) 0 2px, transparent 3px);
+  filter: drop-shadow(0 0 6px rgba(255, 181, 73, .58));
+}
+
+.buildingTwo .architectureLights {
+  background:
+    radial-gradient(circle at 18% 31%, rgba(167, 226, 228, .86) 0 2px, transparent 3px),
+    radial-gradient(circle at 42% 46%, rgba(205, 239, 236, .7) 0 2px, transparent 3px),
+    radial-gradient(circle at 64% 24%, rgba(177, 229, 232, .82) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 58%, rgba(255, 203, 110, .76) 0 2px, transparent 3px);
+}
+
+.buildingActive .architecture {
+  opacity: .48;
+}
+
+.buildingActive .architectureEntrance,
+.buildingActive .architectureRoof,
+.buildingActive .architectureSide {
+  opacity: .86;
 }
 
 .buildingMeta {
@@ -413,6 +640,10 @@
 .buildingMeta strong {
   font: 800 clamp(1.1rem, 2.25vw, 2.5rem)/.88 var(--font-geist-sans), Arial, sans-serif;
   letter-spacing: -.065em;
+}
+
+.buildingThree .buildingMeta strong {
+  font-size: clamp(1rem, 1.85vw, 2.1rem);
 }
 
 .buildingMeta small {
