@@ -9,7 +9,7 @@ body:has([role="dialog"]) .gorshenin-socials {
   transition: opacity .28s ease, transform .35s cubic-bezier(.16,.84,.22,1);
 }
 
-/* Existing cases enter like consecutive film frames without changing their layout. */
+/* Existing cases enter like a continuous film without changing their layout. */
 @supports (animation-timeline: view()) {
   .work > .projects > .project:not(:first-child) {
     animation: cinematicProjectReveal linear both;
