@@ -121,8 +121,13 @@ export default function ProductionIntro() {
   return createPortal(
     <section className={`production-intro ${visible ? "is-visible" : ""}`} aria-labelledby="production-intro-title">
       <div className="production-title-block">
-        <h2 id="production-intro-title" className="production-title">
-          {c.heading}
+        <h2 id="production-intro-title" className="production-title" aria-label={c.heading}>
+          <span className="production-title-final" aria-hidden="true">{c.heading}</span>
+          <span className="production-title-slices" aria-hidden="true">
+            <span className="production-title-slice production-title-slice-top">{c.heading}</span>
+            <span className="production-title-slice production-title-slice-middle">{c.heading}</span>
+            <span className="production-title-slice production-title-slice-bottom">{c.heading}</span>
+          </span>
         </h2>
       </div>
 
