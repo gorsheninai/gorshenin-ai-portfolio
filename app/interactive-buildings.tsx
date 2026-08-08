@@ -49,8 +49,11 @@ export default function InteractiveBuildings() {
       });
     });
 
-    setSlots(buildings.map((node, index) => ({ node, index })));
-    return () => cleanup.forEach((dispose) => dispose());
+    const mountFrame = requestAnimationFrame(() => setSlots(buildings.map((node, index) => ({ node, index }))));
+    return () => {
+      cancelAnimationFrame(mountFrame);
+      cleanup.forEach((dispose) => dispose());
+    };
   }, []);
 
   return (

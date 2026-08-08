@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./portfolio-showcase.module.css";
 
 type MediaItem = {
@@ -88,7 +88,14 @@ export default function PortfolioShowcase() {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [activeBuilding, setActiveBuilding] = useState<number | null>(null);
   const [activeSchool, setActiveSchool] = useState<number | null>(null);
+  const [armedBuilding, setArmedBuilding] = useState<number | null>(null);
+  const [armedSchool, setArmedSchool] = useState<number | null>(null);
   const [selectedCase, setSelectedCase] = useState<CaseSelection>(null);
+  const realEstateStageRef = useRef<HTMLElement | null>(null);
+  const realEstateFrameRef = useRef<HTMLDivElement | null>(null);
+  const schoolsStageRef = useRef<HTMLElement | null>(null);
+  const schoolsFrameRef = useRef<HTMLDivElement | null>(null);
+  const coarsePointerRef = useRef(false);
 
   useEffect(() => {
     const projects = document.querySelector<HTMLElement>(".work .projects");
@@ -102,9 +109,10 @@ export default function PortfolioShowcase() {
 
     const previousDisplay = firstProject.style.display;
     firstProject.style.display = "none";
-    setHost(mount);
+    const mountFrame = requestAnimationFrame(() => setHost(mount));
 
     return () => {
+      cancelAnimationFrame(mountFrame);
       firstProject.style.display = previousDisplay;
       mount.remove();
       setHost(null);
@@ -114,9 +122,58 @@ export default function PortfolioShowcase() {
   useEffect(() => {
     fetch("/api/media", { cache: "no-store" })
       .then((response) => response.json())
-      .then((data) => setMedia(data.media ?? []))
+      .then((data: unknown) => setMedia((data as { media?: MediaItem[] }).media ?? []))
       .catch(() => setMedia([]));
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(hover: none), (pointer: coarse)");
+    const syncPointer = () => { coarsePointerRef.current = mediaQuery.matches; };
+    syncPointer();
+    mediaQuery.addEventListener("change", syncPointer);
+    return () => mediaQuery.removeEventListener("change", syncPointer);
+  }, []);
+
+  useEffect(() => {
+    if (!host) return;
+    let frame = 0;
+
+    const applyProgress = (stage: HTMLElement | null, scene: HTMLElement | null) => {
+      if (!stage || !scene) return;
+      const rect = stage.getBoundingClientRect();
+      const distance = Math.max(1, stage.offsetHeight - window.innerHeight);
+      const progress = Math.max(0, Math.min(1, -rect.top / distance));
+      const storyOpacity = Math.max(0, 1 - progress * 2.45);
+      const contentOpacity = Math.max(0, Math.min(1, (progress - .08) / .34));
+      const contentY = Math.max(0, 16 - progress * 38);
+      const storyY = -progress * 18;
+      const contentScale = .965 + contentOpacity * .035;
+
+      scene.style.setProperty("--scene-progress", progress.toFixed(4));
+      scene.style.setProperty("--story-opacity", storyOpacity.toFixed(4));
+      scene.style.setProperty("--content-opacity", contentOpacity.toFixed(4));
+      scene.style.setProperty("--content-y", `${contentY.toFixed(2)}vh`);
+      scene.style.setProperty("--story-y", `${storyY.toFixed(2)}vh`);
+      scene.style.setProperty("--content-scale", contentScale.toFixed(4));
+    };
+
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        applyProgress(realEstateStageRef.current, realEstateFrameRef.current);
+        applyProgress(schoolsStageRef.current, schoolsFrameRef.current);
+      });
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [host]);
 
   useEffect(() => {
     if (!selectedCase) return;
@@ -156,9 +213,33 @@ export default function PortfolioShowcase() {
 
   const selectedEyebrow = selectedCase?.kind === "building" ? "НЕДВИЖИМОСТЬ" : "ОНЛАЙН-ШКОЛЫ";
 
+  const openBuilding = (index: number) => {
+    if (coarsePointerRef.current && armedBuilding !== index) {
+      setArmedBuilding(index);
+      setActiveBuilding(index);
+      return;
+    }
+    setSelectedCase({ kind: "building", index });
+  };
+
+  const openSchool = (index: number) => {
+    if (coarsePointerRef.current && armedSchool !== index) {
+      setArmedSchool(index);
+      setActiveSchool(index);
+      return;
+    }
+    setSelectedCase({ kind: "school", index });
+  };
+
   return createPortal(
     <>
-      <section className={styles.realEstate} aria-labelledby="real-estate-title">
+      <section className={styles.realEstateStage} ref={realEstateStageRef}>
+        <div className={styles.realEstate} ref={realEstateFrameRef}>
+        <div className={styles.sectionStory} aria-hidden="true">
+          <span>ПРОСТРАНСТВО</span>
+          <strong>СТАНОВИТСЯ</strong>
+          <em>ИСТОРИЕЙ</em>
+        </div>
         <div className={styles.sectionTop}>
           <p>01 / SELECTED FIELD</p>
           <h2 id="real-estate-title">НЕДВИЖИМОСТЬ</h2>
@@ -167,7 +248,9 @@ export default function PortfolioShowcase() {
 
         <div
           className={`${styles.city} ${activeBuilding !== null ? styles.cityHasActive : ""}`}
-          onMouseLeave={() => setActiveBuilding(null)}
+          onMouseLeave={() => {
+            if (!coarsePointerRef.current) setActiveBuilding(null);
+          }}
         >
           <div className={styles.skyGlow} aria-hidden="true" />
           <div className={styles.groundLine} aria-hidden="true" />
@@ -184,9 +267,13 @@ export default function PortfolioShowcase() {
                   key={building.number}
                   className={`${styles.building} ${styles[building.shape]} ${isActive ? styles.buildingActive : ""} ${isDimmed ? styles.buildingDimmed : ""}`}
                   onMouseEnter={() => setActiveBuilding(index)}
-                  onFocus={() => setActiveBuilding(index)}
-                  onBlur={() => setActiveBuilding(null)}
-                  onClick={() => setSelectedCase({ kind: "building", index })}
+                  onFocus={() => {
+                    if (!coarsePointerRef.current) setActiveBuilding(index);
+                  }}
+                  onBlur={() => {
+                    if (!coarsePointerRef.current) setActiveBuilding(null);
+                  }}
+                  onClick={() => openBuilding(index)}
                   aria-label={`Открыть кейс ${building.title}`}
                 >
                   <div className={styles.buildingMedia}>
@@ -205,16 +292,25 @@ export default function PortfolioShowcase() {
             })}
           </div>
         </div>
+        </div>
       </section>
 
-      <section className={styles.schools} aria-labelledby="schools-title">
+      <section className={styles.schoolsStage} ref={schoolsStageRef}>
+        <div className={styles.schools} ref={schoolsFrameRef}>
+        <div className={`${styles.sectionStory} ${styles.schoolStory}`} aria-hidden="true">
+          <span>КОНТЕНТ</span>
+          <strong>СТАНОВИТСЯ</strong>
+          <em>СИСТЕМОЙ</em>
+        </div>
         <div className={styles.schoolHeading}>
           <p>02 / CLIENT SYSTEMS</p>
           <h2 id="schools-title">ОНЛАЙН-ШКОЛЫ</h2>
           <p>HOVER → VIDEO / CLICK → CASE</p>
         </div>
 
-        <div className={styles.schoolPanels} onMouseLeave={() => setActiveSchool(null)}>
+        <div className={styles.schoolPanels} onMouseLeave={() => {
+          if (!coarsePointerRef.current) setActiveSchool(null);
+        }}>
           {schools.map((school, index) => {
             const isActive = activeSchool === index;
             const anyActive = activeSchool !== null;
@@ -226,9 +322,13 @@ export default function PortfolioShowcase() {
                 key={school.name}
                 className={`${styles.schoolPanel} ${isActive ? styles.schoolPanelActive : ""} ${anyActive && !isActive ? styles.schoolPanelCompressed : ""}`}
                 onMouseEnter={() => setActiveSchool(index)}
-                onFocus={() => setActiveSchool(index)}
-                onBlur={() => setActiveSchool(null)}
-                onClick={() => setSelectedCase({ kind: "school", index })}
+                onFocus={() => {
+                  if (!coarsePointerRef.current) setActiveSchool(index);
+                }}
+                onBlur={() => {
+                  if (!coarsePointerRef.current) setActiveSchool(null);
+                }}
+                onClick={() => openSchool(index)}
                 aria-label={`Открыть кейс ${school.name}`}
               >
                 <div className={styles.schoolInner}>
@@ -253,6 +353,7 @@ export default function PortfolioShowcase() {
               </button>
             );
           })}
+        </div>
         </div>
       </section>
 

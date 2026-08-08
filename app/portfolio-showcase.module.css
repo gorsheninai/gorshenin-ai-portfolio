@@ -5,9 +5,28 @@
   isolation: isolate;
 }
 
+.realEstateStage,
+.schoolsStage {
+  position: relative;
+  width: 100%;
+  min-height: 190svh;
+}
+
+.realEstateStage { background: #171914; }
+.schoolsStage { background: #ebe8df; }
+
 .realEstate,
 .schools {
+  --scene-progress: 0;
+  --story-opacity: 1;
+  --content-opacity: 0;
+  --content-y: 16vh;
+  --story-y: 0vh;
+  --content-scale: .965;
   position: relative;
+  position: sticky;
+  top: 0;
+  height: 100svh;
   width: 100%;
   overflow: hidden;
 }
@@ -31,6 +50,54 @@
   mix-blend-mode: soft-light;
 }
 
+.sectionStory {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3vh 2.2vw 8vh;
+  color: #f4f1e9;
+  opacity: var(--story-opacity);
+  transform: translateY(var(--story-y));
+  pointer-events: none;
+}
+
+.sectionStory span,
+.sectionStory strong,
+.sectionStory em {
+  display: block;
+  font: 900 clamp(4.3rem, 10vw, 11.5rem)/.72 var(--font-geist-sans), Arial, sans-serif;
+  letter-spacing: -.09em;
+  white-space: nowrap;
+}
+
+.sectionStory strong {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244,241,233,.76);
+  text-align: right;
+}
+
+.sectionStory em {
+  color: #d8ff36;
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.schoolStory {
+  color: #0d0d0c;
+}
+
+.schoolStory strong {
+  -webkit-text-stroke-color: rgba(13,13,12,.62);
+}
+
+.schoolStory em {
+  color: #789500;
+}
+
 .sectionTop,
 .schoolHeading {
   position: relative;
@@ -41,6 +108,8 @@
   gap: 24px;
   padding: 28px 2.2vw 0;
   pointer-events: none;
+  opacity: var(--content-opacity);
+  transform: translateY(calc(var(--content-y) * .22));
 }
 
 .sectionTop p,
@@ -68,6 +137,10 @@
   position: absolute;
   inset: 0;
   z-index: 2;
+  opacity: var(--content-opacity);
+  transform: translateY(var(--content-y)) scale(var(--content-scale));
+  transform-origin: bottom center;
+  will-change: transform, opacity;
 }
 
 .skyGlow {
@@ -316,6 +389,10 @@
   gap: 8px;
   padding-top: 8px;
   perspective: 1800px;
+  opacity: var(--content-opacity);
+  transform: translateY(var(--content-y)) scale(var(--content-scale));
+  transform-origin: bottom center;
+  will-change: transform, opacity;
 }
 
 .schoolPanel {
@@ -397,7 +474,14 @@
 .logoPlaceholder strong {
   font: 900 clamp(1.5rem, 3.2vw, 4.25rem)/.82 var(--font-geist-sans), Arial, sans-serif;
   letter-spacing: -.075em;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
+.schoolPanelCompressed .logoPlaceholder strong {
+  font-size: clamp(.9rem, 1.55vw, 1.75rem);
+  letter-spacing: -.055em;
 }
 
 .logoPlaceholder small {
@@ -533,8 +617,26 @@
     margin-left: calc(50% - 50vw);
   }
 
+  .realEstateStage,
+  .schoolsStage {
+    min-height: auto;
+  }
+
   .realEstate {
+    position: relative;
+    top: auto;
+    height: auto;
     min-height: 92svh;
+  }
+
+  .schools {
+    position: relative;
+    top: auto;
+    height: auto;
+  }
+
+  .sectionStory {
+    display: none;
   }
 
   .sectionTop,
@@ -542,6 +644,8 @@
     grid-template-columns: 1fr auto;
     padding-left: 18px;
     padding-right: 18px;
+    opacity: 1;
+    transform: none;
   }
 
   .sectionTop p:last-child,
@@ -552,6 +656,12 @@
   .buildingRow {
     inset: 18vh 10px 4vh;
     gap: 6px;
+  }
+
+  .city,
+  .schoolPanels {
+    opacity: 1;
+    transform: none;
   }
 
   .building {
@@ -639,6 +749,7 @@
 
   .logoPlaceholder strong {
     font-size: clamp(1.35rem, 8vw, 2.5rem);
+    white-space: normal;
   }
 
   .modalBackdrop {
@@ -679,6 +790,29 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .realEstateStage,
+  .schoolsStage {
+    min-height: 100svh;
+  }
+
+  .realEstate,
+  .schools {
+    position: relative;
+    top: auto;
+  }
+
+  .sectionStory {
+    display: none;
+  }
+
+  .sectionTop,
+  .schoolHeading,
+  .city,
+  .schoolPanels {
+    opacity: 1;
+    transform: none;
+  }
+
   .building,
   .schoolPanel,
   .schoolInner,
