@@ -4,6 +4,7 @@
   isolation: isolate;
   color: #f1f0ea;
   text-shadow: none;
+  cursor: default;
 }
 
 .gorshenin-lockup-title .production-print-word > span {
@@ -11,12 +12,14 @@
   font: inherit;
   letter-spacing: inherit;
   white-space: nowrap;
+  will-change: transform;
 }
 
 .gorshenin-lockup-title .production-print-main {
   position: relative;
   z-index: 3;
   color: #f1f0ea;
+  transition: transform .42s cubic-bezier(.16,.84,.22,1), letter-spacing .42s cubic-bezier(.16,.84,.22,1);
 }
 
 .gorshenin-lockup-title .production-print-red,
@@ -25,6 +28,8 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  mix-blend-mode: screen;
+  transition: transform .42s cubic-bezier(.16,.84,.22,1), opacity .3s ease;
 }
 
 .gorshenin-lockup-title .production-print-red {
@@ -37,12 +42,59 @@
   transform: translateX(4px);
 }
 
+.gorshenin-lockup-title .production-print-word:hover .production-print-main {
+  animation: production-register-main .62s cubic-bezier(.16,.84,.22,1) forwards;
+}
+
+.gorshenin-lockup-title .production-print-word:hover .production-print-red {
+  animation: production-register-red .62s cubic-bezier(.16,.84,.22,1) forwards;
+}
+
+.gorshenin-lockup-title .production-print-word:hover .production-print-blue {
+  animation: production-register-blue .62s cubic-bezier(.16,.84,.22,1) forwards;
+}
+
+@keyframes production-register-main {
+  0% { transform: scaleX(1) skewX(0deg); }
+  34% { transform: scaleX(1.055) skewX(-1.6deg); }
+  62% { transform: scaleX(.99) skewX(.6deg); }
+  100% { transform: scaleX(1.025) skewX(0deg); }
+}
+
+@keyframes production-register-red {
+  0% { transform: translateX(-4px) translateY(0) skewX(0deg); }
+  36% { transform: translateX(-11px) translateY(1px) skewX(-2deg); }
+  66% { transform: translateX(-5px) translateY(-1px) skewX(.8deg); }
+  100% { transform: translateX(-7px) translateY(0) skewX(0deg); }
+}
+
+@keyframes production-register-blue {
+  0% { transform: translateX(4px) translateY(0) skewX(0deg); }
+  36% { transform: translateX(11px) translateY(-1px) skewX(2deg); }
+  66% { transform: translateX(5px) translateY(1px) skewX(-.8deg); }
+  100% { transform: translateX(7px) translateY(0) skewX(0deg); }
+}
+
 @media (max-width: 900px) {
   .gorshenin-lockup-title .production-print-red { transform: translateX(-3px); }
   .gorshenin-lockup-title .production-print-blue { transform: translateX(3px); }
+
+  .gorshenin-lockup-title .production-print-word:hover .production-print-main,
+  .gorshenin-lockup-title .production-print-word:hover .production-print-red,
+  .gorshenin-lockup-title .production-print-word:hover .production-print-blue {
+    animation-duration: .56s;
+  }
 }
 
 @media (max-width: 760px) {
   .gorshenin-lockup-title .production-print-red { transform: translateX(-2px); }
   .gorshenin-lockup-title .production-print-blue { transform: translateX(2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gorshenin-lockup-title .production-print-word:hover .production-print-main,
+  .gorshenin-lockup-title .production-print-word:hover .production-print-red,
+  .gorshenin-lockup-title .production-print-word:hover .production-print-blue {
+    animation: none !important;
+  }
 }
