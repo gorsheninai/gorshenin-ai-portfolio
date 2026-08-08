@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import styles from "./portfolio.module.css";
 
-type Lang = "ru" | "en";
 type MediaItem = {
   id: string;
   title: string;
@@ -15,173 +15,316 @@ type MediaItem = {
   createdAt: string;
 };
 
-const projects = [
-  {
-    number: "01", year: "2026", visual: "list", format: "9:16 / 16:9 · 24 сек",
-    ru: { title: "ЛИСТ — два века на одном месте", type: "ИИ-ФИЛЬМ · НЕДВИЖИМОСТЬ", caption: "История города превращается в историю будущего дома.", brief: "Имиджевый фильм для жилого комплекса, где четыре визуальные эпохи соединяются в одну непрерывную историю места.", scope: "Креативная режиссура · Сценарий · ИИ-продакшн · Монтаж" },
-    en: { title: "LIST — two centuries in one place", type: "AI FILM · REAL ESTATE", caption: "The history of a city becomes the story of a future home.", brief: "A brand film for a residential development where four visual eras merge into one continuous story of place.", scope: "Creative direction · Script · AI production · Edit" },
-  },
-  {
-    number: "02", year: "2026", visual: "zagorka", format: "9:16 · 50 сек",
-    ru: { title: "Загорка — сделано с душой", type: "ДИЗАЙН ПЕРСОНАЖЕЙ · КАМПАНИЯ", caption: "Тёплая 3D-сказка о команде, которая варит характер бренда.", brief: "Брендовый мир с собственными героями — Солодом, Хмелем, Дрожжами и Водой — рассказанный как короткий анимационный фильм.", scope: "Концепция · Персонажи · Раскадровка · ИИ-анимация" },
-    en: { title: "Zagorka — made with soul", type: "CHARACTER DESIGN · CAMPAIGN", caption: "A warm 3D tale about the team brewing a brand’s character.", brief: "A brand world with its own cast — Malt, Hops, Yeast and Water — told as a short animated film.", scope: "Concept · Characters · Storyboard · AI animation" },
-  },
-  {
-    number: "03", year: "2026", visual: "doshirak", format: "16:9 · 8 сек",
-    ru: { title: "Доширак: взрыв свежести", type: "СПЕК-РЕКЛАМА · ПРОДУКТОВЫЙ ФИЛЬМ", caption: "Абсурдный продукт, снятый как настоящая большая реклама.", brief: "Спек-концепт, превращающий невозможный вкус в кинематографичную продуктовую рекламу с контролируемой динамикой и макродеталями.", scope: "Арт-дирекшн · Дизайн продукта · ИИ-фильм · Звук" },
-    en: { title: "Doshirak: a burst of freshness", type: "SPEC AD · PRODUCT FILM", caption: "An absurd product treated like a real global commercial.", brief: "A spec concept turning an impossible flavour into a cinematic product film with controlled motion and macro detail.", scope: "Art direction · Product design · AI film · SFX" },
-  },
-  {
-    number: "04", year: "2026", visual: "pulse", format: "9:16 / 4:5",
-    ru: { title: "Пульс континента", type: "ФЭШН-ФИЛЬМ · ВИЗУАЛЬНЫЙ СТИЛЬ", caption: "Африканский ритм, высокая мода и строгая симметрия подиума.", brief: "Визуальная система для бельевого шоу: от ключевых образов до коротких подиумных фильмов и анонсирующей кампании.", scope: "Визуальная концепция · Фэшн-фильм · Кампания" },
-    en: { title: "Pulse of the Continent", type: "FASHION FILM · VISUAL IDENTITY", caption: "African rhythm, high fashion and strict runway symmetry.", brief: "A visual system for a lingerie show, from key images to short runway films and the launch campaign.", scope: "Visual concept · Fashion film · Social campaign" },
-  },
-  {
-    number: "05", year: "2026", visual: "metalist", format: "16:9 · 15 сек",
-    ru: { title: "Металлист — за синей дверью", type: "ИИ-РЕКЛАМА · НЕДВИЖИМОСТЬ", caption: "Обычная дверь открывает путешествие, которое невозможно снять в жизни.", brief: "Премиальная реклама недвижимости: пара проходит через пустыню, спорткар и заснеженную вершину, не покидая будущую квартиру.", scope: "Идея · Дизайн кадров · ИИ-продакшн · Консистентность" },
-    en: { title: "Metallist — behind the blue door", type: "AI COMMERCIAL · REAL ESTATE", caption: "An ordinary door opens a journey impossible to shoot in real life.", brief: "A premium real-estate commercial: a couple crosses a desert, a sports car and a snowy summit without leaving their future apartment.", scope: "Idea · Shot design · AI production · Continuity" },
-  },
-  {
-    number: "06", year: "2026", visual: "nikulshina", format: "9:16 · 32 сек",
-    ru: { title: "Nikulshina Studio: новая сказка", type: "ФИЛЬМ С ПЕРСОНАЖАМИ · БЬЮТИ", caption: "Бьюти-процедуры, рассказанные языком странной современной сказки.", brief: "Сюжетная серия для соцсетей с антропоморфными героями, юмором и последовательной трансформацией персонажа.", scope: "История · Консистентность героев · ИИ-видео · Монтаж" },
-    en: { title: "Nikulshina Studio: a new fairy tale", type: "CHARACTER FILM · BEAUTY", caption: "Beauty treatments told through a strange modern fairy tale.", brief: "A social-first narrative series with anthropomorphic characters, humour and a controlled character transformation.", scope: "Story · Character consistency · AI video · Edit" },
-  },
-];
+type CaseView = {
+  eyebrow: string;
+  title: string;
+  videos: MediaItem[];
+};
 
-const copy = {
-  ru: {
-    home: "На главную", role: "ИИ-КРЕАТИВНЫЙ ДИРЕКТОР", worldwide: "РАБОТАЮ ПО ВСЕМУ МИРУ", contact: "ОБСУДИТЬ ПРОЕКТ ↗",
-    available: "ОТКРЫТ ДЛЯ НОВЫХ ПРОЕКТОВ · 2026", hero1: "ФИЛЬМЫ, КОТОРЫЕ", hero2: "НЕВОЗМОЖНО СНЯТЬ", hero3: "БЕЗ", imagination: "ВООБРАЖЕНИЯ.",
-    intro: "Я превращаю идеи в рекламные фильмы, визуальные миры и персонажей — от первого концепта до финального монтажа.", view: "СМОТРЕТЬ РАБОТЫ", selected: "ИЗБРАННЫЕ РАБОТЫ", explore: "ЛИСТАЙТЕ ДЛЯ ПРОСМОТРА", open: "ОТКРЫТЬ\nКЕЙС ↗", openAria: "Открыть кейс",
-    ticker: "ИИ-РЕКЛАМА ✦ КРЕАТИВНАЯ РЕЖИССУРА ✦ ГЕНЕРАТИВНЫЕ ФИЛЬМЫ ✦ ВИЗУАЛЬНЫЕ МИРЫ ✦ ИИ-РЕКЛАМА ✦ КРЕАТИВНАЯ РЕЖИССУРА ✦ ГЕНЕРАТИВНЫЕ ФИЛЬМЫ ✦ ВИЗУАЛЬНЫЕ МИРЫ ✦",
-    fresh: "СВЕЖИЕ РАБОТЫ", uploaded: "ЗАГРУЖЕНО ИЗ РЕДАКТОРА", about: "ОБО МНЕ", creator: "ВЛАД ГОРШЕНИН · НЕЗАВИСИМЫЙ ИИ-КРЕАТОР", aboutTitle1: "Не генерирую клипы.", aboutTitle2: "Строю цельные миры.",
-    about1: "Работаю на стыке режиссуры, рекламы и генеративных технологий. Сохраняю лица, продукт и логику движения от первого до последнего кадра.", about2: "Подключаюсь на любом этапе: могу усилить готовую идею или полностью провести проект от брифа и раскадровки до звука и финального экспорта.",
-    capabilities: "ВОЗМОЖНОСТИ", cap: [["ИИ-РЕКЛАМА", "Рекламные ролики, продуктовые фильмы и спек-проекты"], ["ВИЗУАЛЬНЫЕ ИСТОРИИ", "Сценарии, раскадровки и драматургия кадра"], ["СИСТЕМЫ ПЕРСОНАЖЕЙ", "Консистентные герои и бренд-персонажи"], ["МИРЫ ДЛЯ КАМПАНИЙ", "Ключевые визуалы и серии контента для запуска"]],
-    process: "ПРОЦЕСС", processTitle1: "ОТ БРИФА", processTitle2: "ДО ФИНАЛЬНОГО МОНТАЖА.", steps: [["КОНЦЕПЦИЯ", "Находим сильный первый кадр, идею и драматургию."], ["МИР", "Фиксируем героев, стиль, свет и правила визуального мира."], ["ДВИЖЕНИЕ", "Режиссируем движение камеры, актёров и объектов."], ["ФИНАЛ", "Монтаж, саунд-дизайн, цвет и адаптации под площадки."]],
-    contactStatus: "ОТКРЫТ ДЛЯ ИЗБРАННЫХ ПРОЕКТОВ", contact1: "ЕСТЬ ИДЕЯ,", contact2: "КОТОРАЯ КАЖЕТСЯ НЕВОЗМОЖНОЙ?", make: "ДАВАЙТЕ ВОПЛОТИМ ЕЁ ↗", top: "НАВЕРХ ↑", close: "ЗАКРЫТЬ ×", case: "КЕЙС", scope: "МОЯ РОЛЬ", format: "ФОРМАТ", similar: "ХОЧУ ПОХОЖИЙ ПРОЕКТ ↗",
+const buildingConfig = [
+  {
+    number: "01",
+    title: "ЛИСТ",
+    subtitle: "ЖК / ИИ-ФИЛЬМ",
+    className: "buildingOne",
+    keywords: ["лист", "list"],
   },
-  en: {
-    home: "Home", role: "AI CREATIVE DIRECTOR", worldwide: "AVAILABLE WORLDWIDE", contact: "START A PROJECT ↗",
-    available: "OPEN FOR SELECTED PROJECTS · 2026", hero1: "FILMS THAT", hero2: "COULDN’T EXIST", hero3: "WITHOUT", imagination: "IMAGINATION.",
-    intro: "I turn ideas into commercials, visual worlds and characters — from the first concept to the final cut.", view: "VIEW WORK", selected: "SELECTED WORK", explore: "SCROLL TO EXPLORE", open: "VIEW\nCASE ↗", openAria: "Open case",
-    ticker: "AI COMMERCIALS ✦ CREATIVE DIRECTION ✦ GENERATIVE FILMS ✦ VISUAL WORLDS ✦ AI COMMERCIALS ✦ CREATIVE DIRECTION ✦ GENERATIVE FILMS ✦ VISUAL WORLDS ✦",
-    fresh: "LATEST WORK", uploaded: "UPLOADED FROM STUDIO", about: "ABOUT", creator: "VLAD GORSHENIN · INDEPENDENT AI CREATOR", aboutTitle1: "I don’t generate clips.", aboutTitle2: "I build complete worlds.",
-    about1: "I work at the intersection of directing, advertising and generative technology, preserving faces, products and motion logic from the first frame to the last.", about2: "I can join at any stage: strengthen an existing idea or lead the entire project from brief and storyboard to sound and final delivery.",
-    capabilities: "CAPABILITIES", cap: [["AI COMMERCIALS", "Commercials, product films and spec work"], ["VISUAL STORYTELLING", "Scripts, storyboards and visual drama"], ["CHARACTER SYSTEMS", "Consistent heroes and brand characters"], ["CAMPAIGN WORLDS", "Key visuals and content systems for launches"]],
-    process: "PROCESS", processTitle1: "FROM BRIEF", processTitle2: "TO FINAL CUT.", steps: [["CONCEPT", "We find the hook, idea and dramatic structure."], ["WORLD", "We lock characters, style, lighting and visual rules."], ["MOTION", "We direct camera, performers and object movement."], ["FINISH", "Edit, sound design, colour and platform versions."]],
-    contactStatus: "AVAILABLE FOR SELECTED PROJECTS", contact1: "HAVE AN IDEA", contact2: "THAT FEELS IMPOSSIBLE?", make: "LET’S MAKE IT REAL ↗", top: "BACK TO TOP ↑", close: "CLOSE ×", case: "CASE", scope: "SCOPE", format: "FORMAT", similar: "I WANT A SIMILAR PROJECT ↗",
+  {
+    number: "02",
+    title: "МЕТАЛЛИСТ",
+    subtitle: "ЖК / ИИ-РЕКЛАМА",
+    className: "buildingTwo",
+    keywords: ["металлист", "metalist", "metallist"],
   },
-} as const;
+  {
+    number: "03",
+    title: "НОВЫЙ КЕЙС",
+    subtitle: "ЖК / НЕДВИЖИМОСТЬ",
+    className: "buildingThree",
+    keywords: ["жк", "real estate", "недвижимость"],
+  },
+] as const;
+
+const schoolConfig = [
+  { number: "01", title: "MACARUN", keywords: ["macarun", "макарун"] },
+  { number: "02", title: "EASYCODE", keywords: ["easycode", "easycod", "изи код"] },
+  { number: "03", title: "STANDUP", keywords: ["standup", "стендап"] },
+  { number: "04", title: "PROXYGEX", keywords: ["proxygex", "proxy"] },
+] as const;
+
+const otherWork = [
+  ["01", "ЗАГОРКА"],
+  ["02", "ДОШИРАК"],
+  ["03", "ПУЛЬС КОНТИНЕНТА"],
+  ["04", "NIKULSHINA STUDIO"],
+] as const;
+
+function containsKeyword(item: MediaItem, keywords: readonly string[]) {
+  const haystack = `${item.title} ${item.description} ${item.project} ${item.fileName}`.toLowerCase();
+  return keywords.some((keyword) => haystack.includes(keyword.toLowerCase()));
+}
 
 export default function Home() {
-  const [lang, setLang] = useState<Lang>("ru");
-  const [selectedNumber, setSelectedNumber] = useState<string | null>(null);
   const [media, setMedia] = useState<MediaItem[]>([]);
-  const c = copy[lang];
-  const selected = useMemo(() => projects.find((project) => project.number === selectedNumber) ?? null, [selectedNumber]);
+  const [selected, setSelected] = useState<CaseView | null>(null);
 
   useEffect(() => {
-    fetch("/api/media", { cache: "no-store" }).then((response) => response.json()).then((data) => setMedia(data.media ?? [])).catch(() => setMedia([]));
+    fetch("/api/media", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((data) => setMedia(data.media ?? []))
+      .catch(() => setMedia([]));
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelected(null);
+    };
 
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setSelectedNumber(null);
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKeyDown);
     document.body.style.overflow = selected ? "hidden" : "";
-    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+    };
   }, [selected]);
 
+  const videos = useMemo(() => media.filter((item) => item.mediaType === "video"), [media]);
+
+  const buildings = useMemo(
+    () => buildingConfig.map((building, index) => {
+      const matched = videos.filter((video) => containsKeyword(video, building.keywords));
+      const fallback = videos[index] ? [videos[index]] : [];
+      const caseVideos = matched.length > 0 ? matched : fallback;
+      return { ...building, preview: caseVideos[0] ?? null, caseVideos };
+    }),
+    [videos],
+  );
+
+  const schools = useMemo(
+    () => schoolConfig.map((school, index) => {
+      const matched = videos.filter((video) => containsKeyword(video, school.keywords));
+      const fallbackVideo = videos[index + 3] ?? videos[index] ?? null;
+      const caseVideos = matched.length > 0 ? matched : fallbackVideo ? [fallbackVideo] : [];
+      return { ...school, preview: caseVideos[0] ?? null, caseVideos };
+    }),
+    [videos],
+  );
+
   return (
-    <main>
-      <header className="nav-shell">
-        <a className="wordmark" href="#top" aria-label={c.home}>GORSHENIN<span>®</span></a>
-        <div className="nav-meta"><span>{c.role}</span><span>{c.worldwide}</span></div>
-        <div className="nav-actions">
-          <div className="language-switch" aria-label="Language / Язык">
-            <button className={lang === "ru" ? "active" : ""} onClick={() => setLang("ru")}>RU</button>
-            <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button>
+    <main className={styles.page}>
+      <div className={styles.socialRail} aria-label="Социальные сети">
+        <a
+          className={`${styles.socialButton} ${styles.instagramButton}`}
+          href="https://www.instagram.com/gorshenin.ai"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Instagram"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7.4 2h9.2A5.4 5.4 0 0 1 22 7.4v9.2a5.4 5.4 0 0 1-5.4 5.4H7.4A5.4 5.4 0 0 1 2 16.6V7.4A5.4 5.4 0 0 1 7.4 2Zm0 1.8a3.6 3.6 0 0 0-3.6 3.6v9.2a3.6 3.6 0 0 0 3.6 3.6h9.2a3.6 3.6 0 0 0 3.6-3.6V7.4a3.6 3.6 0 0 0-3.6-3.6H7.4Zm9.85 1.35a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6ZM12 6.7A5.3 5.3 0 1 1 12 17.3 5.3 5.3 0 0 1 12 6.7Zm0 1.8a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" />
+          </svg>
+        </a>
+        <a
+          className={`${styles.socialButton} ${styles.telegramButton}`}
+          href="https://t.me/gorshenin_ai"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span>Обсудить проект</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21.35 3.12 18.2 20.07c-.24 1.2-.87 1.49-1.77.93l-4.8-3.54-2.32 2.23c-.26.26-.47.47-.96.47l.34-4.89 8.91-8.05c.39-.34-.08-.53-.6-.19L5.98 13.97 1.24 12.49c-1.03-.32-1.05-1.03.22-1.53L19.98 3.8c.86-.31 1.61.2 1.37-.68Z" />
+          </svg>
+        </a>
+      </div>
+
+      <section className={styles.hero} id="top">
+        <div className={styles.brandLockup}>
+          <div className={styles.brandTitle}><span>GORSHENIN</span><span>PRODUCTION</span></div>
+          <div className={styles.brandSub}>контент <span>[ без ограничений ]</span></div>
+        </div>
+
+        <div className={styles.heroMeta}><span className={styles.dot} /> AI CREATIVE PRODUCTION · 2026</div>
+        <p className={styles.heroEyebrow}>КРЕАТИВ / ИИ-ПРОДАКШН / РЕЖИССУРА</p>
+        <h1><span>КОНТЕНТ</span><span>БЕЗ</span><span>ОГРАНИЧЕНИЙ</span></h1>
+        <div className={styles.heroBottom}>
+          <p>Рекламные фильмы, визуальные миры и невозможные сцены — от первой идеи до финального монтажа.</p>
+          <a href="#real-estate"><span>СМОТРЕТЬ РАБОТЫ</span><i>↓</i></a>
+        </div>
+      </section>
+
+      <section className={styles.citySection} id="real-estate">
+        <div className={styles.cityStage}>
+          <div className={styles.sectionTop}>
+            <h2>01 / НЕДВИЖИМОСТЬ</h2>
+            <span>НАВЕДИ НА ЗДАНИЕ → VIDEO</span>
           </div>
-          <a className="nav-contact" href="#contact">{c.contact}</a>
-        </div>
-      </header>
 
-      <section className="hero" id="top">
-        <div className="hero-kicker"><span className="status-dot" /> {c.available}</div>
-        <h1><span>{c.hero1}</span><span className="outline">{c.hero2}</span><span>{c.hero3} <i>{c.imagination}</i></span></h1>
-        <div className="hero-bottom"><p>{c.intro}</p><a href="#work" className="scroll-link">{c.view} <span>↓</span></a></div>
-        <div className="hero-orbit" aria-hidden="true"><span className="orbit-one" /><span className="orbit-two" /><b>{lang === "ru" ? "ИИ / ФИЛЬМ / АРТ" : "AI / FILM / ART"}</b></div>
-      </section>
-
-      <section className="work" id="work">
-        <div className="section-head"><p>{c.selected}</p><p>2025—2026</p><p>{c.explore}</p></div>
-        <div className="projects">
-          {projects.map((project) => {
-            const text = project[lang];
-            return (
-              <article className="project" key={project.number}>
-                <button className={`project-visual visual-${project.visual}`} onClick={() => setSelectedNumber(project.number)} aria-label={`${c.openAria}: ${text.title}`}>
-                  <span className="project-index">{project.number}</span><div className="visual-noise" />
-                  {project.visual === "list" && <div className="architecture" aria-hidden="true"><i /><i /><i /></div>}
-                  {project.visual === "zagorka" && <div className="amber-world" aria-hidden="true"><i /><i /><i /><b>25</b></div>}
-                  {project.visual === "doshirak" && <div className="mint-impact" aria-hidden="true"><i /><i /><i /><b>{lang === "ru" ? "СВЕЖЕСТЬ / НЕВОЗМОЖНОЕ" : "FRESH / IMPOSSIBLE"}</b></div>}
-                  {project.visual === "pulse" && <div className="pulse-stage" aria-hidden="true"><i /><i /><i /><b>ПУЛЬС<br />КОНТИНЕНТА</b></div>}
-                  {project.visual === "metalist" && <div className="blue-door" aria-hidden="true"><i /><b>{lang === "ru" ? <>ОТКРОЙ<br />НЕВОЗМОЖНОЕ</> : <>OPEN<br />THE<br />IMPOSSIBLE</>}</b></div>}
-                  {project.visual === "nikulshina" && <div className="fairytale" aria-hidden="true"><i /><i /><b>{lang === "ru" ? <>У КРАСОТЫ<br />НОВАЯ<br />ИСТОРИЯ</> : <>BEAUTY<br />HAS A<br />NEW STORY</>}</b></div>}
-                  <span className="play">{c.open.split("\n").map((line, index) => <span key={index}>{line}<br /></span>)}</span>
-                </button>
-                <div className="project-info"><p>{text.type}</p><h2>{text.title}</h2><p className="project-caption">{text.caption}</p><p>{project.year}</p></div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {media.length > 0 && (
-        <section className="uploaded-work">
-          <div className="section-head"><p>{c.fresh}</p><p>{media.length.toString().padStart(2, "0")}</p><p>{c.uploaded}</p></div>
-          <div className="uploaded-grid">
-            {media.map((item) => (
-              <article key={item.id}>
-                <div className="uploaded-media">{item.mediaType === "video" ? <video src={`/api/media/${item.id}`} controls playsInline preload="metadata" /> : <img src={`/api/media/${item.id}`} alt={item.title} loading="lazy" />}</div>
-                <div><h2>{item.title}</h2>{item.description && <p>{item.description}</p>}</div>
-              </article>
+          <div className={styles.cityBuildings}>
+            {buildings.map((building) => (
+              <button
+                type="button"
+                key={building.number}
+                className={`${styles.building} ${styles[building.className]}`}
+                onClick={() => setSelected({
+                  eyebrow: `${building.number} / НЕДВИЖИМОСТЬ`,
+                  title: building.title,
+                  videos: building.caseVideos,
+                })}
+                aria-label={`Открыть кейс ${building.title}`}
+              >
+                {building.preview ? (
+                  <video
+                    className={styles.buildingVideo}
+                    src={`/api/media/${building.preview.id}`}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : (
+                  <div className={styles.buildingFallback} />
+                )}
+                <div className={styles.facade} />
+                <div className={styles.buildingMeta}>
+                  <div><span>{building.number} / {building.subtitle}</span><strong>{building.title}</strong></div>
+                  <span className={styles.buildingOpen}>ОТКРЫТЬ<br />↗</span>
+                </div>
+              </button>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
+
+      <section className={styles.schoolSection} id="schools">
+        <div className={styles.schoolHeader}>
+          <div>
+            <p>02 / КЕЙСЫ</p>
+            <h2>ОНЛАЙН-ШКОЛЫ</h2>
+          </div>
+          <span>Наведи на панель — она перевернётся и покажет превью. Нажми — откроется полный кейс школы.</span>
+        </div>
+
+        <div className={styles.schoolPanels}>
+          {schools.map((school) => (
+            <button
+              type="button"
+              className={styles.schoolPanel}
+              key={school.number}
+              onClick={() => setSelected({
+                eyebrow: `${school.number} / ОНЛАЙН-ШКОЛА`,
+                title: school.title,
+                videos: school.caseVideos,
+              })}
+              aria-label={`Открыть кейс ${school.title}`}
+            >
+              <span className={styles.schoolInner}>
+                <span className={`${styles.schoolFace} ${styles.schoolFront}`}>
+                  <span className={styles.schoolNumber}>{school.number}</span>
+                  <strong className={styles.placeholderLogo}>{school.title}</strong>
+                  <span className={styles.schoolHint}>LOGO PLACEHOLDER / HOVER TO FLIP</span>
+                </span>
+
+                <span className={`${styles.schoolFace} ${styles.schoolBack}`}>
+                  {school.preview ? (
+                    <video
+                      src={`/api/media/${school.preview.id}`}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                    />
+                  ) : (
+                    <span className={styles.schoolVideoFallback}>VIDEO PREVIEW</span>
+                  )}
+                  <span className={styles.schoolBackOverlay}>
+                    <strong>{school.title}</strong>
+                    <span>↗</span>
+                  </span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.otherWork}>
+        <div className={styles.otherWorkHead}>
+          <div><p>03 / ЕЩЁ</p><h2>ДРУГИЕ РАБОТЫ</h2></div>
+          <p>AI FILM / PRODUCT / FASHION / CHARACTER</p>
+        </div>
+        <div className={styles.otherGrid}>
+          {otherWork.map(([number, title]) => (
+            <article className={styles.otherCard} key={title}>
+              <span>{number} / 2026</span>
+              <h3>{title}</h3>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.about}>
+        <div className={styles.aboutLabel}>04 / ОБО МНЕ</div>
+        <div className={styles.aboutContent}>
+          <h2>НЕ ГЕНЕРИРУЮ КЛИПЫ.<br /><em>СТРОЮ ЦЕЛЬНЫЕ МИРЫ.</em></h2>
+          <div className={styles.aboutColumns}>
+            <p>Работаю на стыке режиссуры, рекламы и генеративных технологий. Сохраняю лица, продукт и логику движения от первого до последнего кадра.</p>
+            <p>Могу подключиться к готовой идее или полностью провести проект: концепт, раскадровка, генерация, анимация, монтаж, звук и финальные адаптации.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.process}>
+        <h2>ОТ ИДЕИ<br />ДО ФИНАЛЬНОГО КАДРА.</h2>
+        <div className={styles.processGrid}>
+          <article><span>01</span><h3>КОНЦЕПЦИЯ</h3><p>Находим сильный первый кадр, идею и драматургию.</p></article>
+          <article><span>02</span><h3>ВИЗУАЛЬНЫЙ МИР</h3><p>Фиксируем стиль, героев, продукт, свет и правила мира.</p></article>
+          <article><span>03</span><h3>ДВИЖЕНИЕ</h3><p>Режиссируем камеру, персонажей и объекты без случайного морфинга.</p></article>
+          <article><span>04</span><h3>ФИНАЛ</h3><p>Монтаж, саунд-дизайн, цвет и версии под нужные площадки.</p></article>
+        </div>
+      </section>
+
+      <section className={styles.contact} id="contact">
+        <p>ОТКРЫТ ДЛЯ НОВЫХ ПРОЕКТОВ · 2026</p>
+        <h2>ЕСТЬ ИДЕЯ?<br />СДЕЛАЕМ.</h2>
+        <div className={styles.contactLinks}>
+          <a href="https://t.me/gorshenin_ai" target="_blank" rel="noreferrer">TELEGRAM ↗</a>
+          <a href="https://www.instagram.com/gorshenin.ai" target="_blank" rel="noreferrer">INSTAGRAM ↗</a>
+          <a href="#top">НАВЕРХ ↑</a>
+        </div>
+      </section>
+
+      {selected && (
+        <div className={styles.modalBackdrop} role="presentation" onMouseDown={() => setSelected(null)}>
+          <section className={styles.modal} role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
+            <div className={styles.modalTop}>
+              <div><p className={styles.modalEyebrow}>{selected.eyebrow}</p><h2>{selected.title}</h2></div>
+              <button type="button" className={styles.modalClose} onClick={() => setSelected(null)}>ЗАКРЫТЬ ×</button>
+            </div>
+
+            <div className={styles.modalHero}>
+              {selected.videos[0] ? (
+                <video src={`/api/media/${selected.videos[0].id}`} controls autoPlay playsInline />
+              ) : (
+                <div className={styles.modalEmpty}>ВИДЕО ЕЩЁ НЕ ПРИВЯЗАНО.<br />ЗАГРУЗИМ ЕГО ЧЕРЕЗ STUDIO — ДИЗАЙН УЖЕ ГОТОВ.</div>
+              )}
+            </div>
+
+            {selected.videos.length > 1 && (
+              <>
+                <p className={styles.modalMoreTitle}>ДРУГИЕ КЕЙСЫ / ВИДЕО</p>
+                <div className={styles.modalGrid}>
+                  {selected.videos.slice(1).map((video) => (
+                    <video key={video.id} src={`/api/media/${video.id}`} controls playsInline preload="metadata" />
+                  ))}
+                </div>
+              </>
+            )}
+          </section>
+        </div>
       )}
-
-      <div className="ticker" aria-hidden="true"><div>{c.ticker}</div></div>
-
-      <section className="about" id="about">
-        <div className="section-label">{c.about} / 07</div>
-        <div className="about-copy"><p className="eyebrow">{c.creator}</p><h2>{c.aboutTitle1}<br /><em>{c.aboutTitle2}</em></h2><div className="about-grid"><p>{c.about1}</p><p>{c.about2}</p></div></div>
-      </section>
-
-      <section className="capabilities">
-        <div className="section-label">{c.capabilities} / 08</div>
-        <div className="cap-list">{c.cap.map(([title, description], index) => <div className="cap-row" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p><b>↗</b></div>)}</div>
-      </section>
-
-      <section className="process" id="process">
-        <div className="process-head"><div className="section-label">{c.process} / 09</div><h2>{c.processTitle1}<br /><i>{c.processTitle2}</i></h2></div>
-        <div className="process-grid">{c.steps.map(([title, text], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
-        <div className="tool-line">SEEDANCE 2.0 / KLING 3.0 / VEO 3.1 / GPT IMAGE / MIDJOURNEY / CAPCUT / ELEVENLABS / SUNO</div>
-      </section>
-
-      <section className="contact" id="contact">
-        <p className="eyebrow"><span className="status-dot" /> {c.contactStatus}</p><h2>{c.contact1}<br />{c.contact2.includes("?") ? <i>{c.contact2}</i> : c.contact2}</h2>
-        <a className="contact-mail" href="mailto:gorsheninai2001@gmail.com">{c.make}</a>
-        <footer><a href="https://instagram.com/gorshenin.ai" target="_blank" rel="noreferrer">INSTAGRAM ↗</a><span>{lang === "ru" ? "ВЛАД ГОРШЕНИН" : "VLAD GORSHENIN"} · 2026</span><a href="#top">{c.top}</a></footer>
-      </section>
-
-      {selected && (() => {
-        const text = selected[lang];
-        return <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelectedNumber(null)}><section className="case-modal" role="dialog" aria-modal="true" aria-labelledby="case-title" onMouseDown={(event) => event.stopPropagation()}><button className="modal-close" onClick={() => setSelectedNumber(null)} aria-label={c.close}>{c.close}</button><p className="eyebrow">{c.case} {selected.number} · {selected.year}</p><h2 id="case-title">{text.title}</h2><p className="modal-brief">{text.brief}</p><div className="modal-meta"><div><span>{c.scope}</span><p>{text.scope}</p></div><div><span>{c.format}</span><p>{selected.format}</p></div></div><a href="mailto:gorsheninai2001@gmail.com?subject=Хочу обсудить похожий проект">{c.similar}</a></section></div>;
-      })()}
     </main>
   );
 }
