@@ -47,34 +47,11 @@
 }
 
 .realEstate {
-  --portal-clip: 0%;
-  --portal-radius: clamp(28px, 3vw, 54px);
-  --case-scale: 1;
-  --case-rotate: 0deg;
-  --case-shift: 0vh;
-  --case-brightness: 1;
-  --entry-copy-opacity: 1;
-  --entry-copy-shift: 0vh;
-  --entry-glow-opacity: 1;
-  --entry-glow-scale: 1;
-  --entry-ground-opacity: 1;
-  --building-1-opacity: 1;
-  --building-1-shift: 0vh;
-  --building-1-scale: 1;
-  --building-2-opacity: 1;
-  --building-2-shift: 0vh;
-  --building-2-scale: 1;
-  --building-3-opacity: 1;
-  --building-3-shift: 0vh;
-  --building-3-scale: 1;
   position: relative;
   height: 100svh;
-  border-radius: var(--portal-radius) var(--portal-radius) 0 0;
-  clip-path: inset(0 0 var(--portal-clip) 0 round var(--portal-radius) var(--portal-radius) 0 0);
-  transform: translateY(var(--case-shift)) rotate(var(--case-rotate)) scale(var(--case-scale));
+  border-radius: clamp(28px, 3vw, 54px) clamp(28px, 3vw, 54px) 0 0;
   transform-origin: 50% 8%;
-  filter: brightness(var(--case-brightness));
-  will-change: clip-path, transform, filter;
+  will-change: transform;
 }
 
 .realEstate {
@@ -93,6 +70,21 @@
   opacity: .14;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.76' numOctaves='3' stitchTiles='stitchTiles'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.72'/%3E%3C/svg%3E");
   mix-blend-mode: soft-light;
+}
+
+.portalCurtain {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(216, 255, 54, .24), transparent 30%),
+    #ece9e1;
+  border-top: 1px solid rgba(17, 17, 15, .18);
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: paint;
 }
 
 .realEstate::before,
@@ -148,9 +140,16 @@
 }
 
 .realEstate .sectionTop {
-  opacity: var(--entry-copy-opacity);
-  transform: translateY(var(--entry-copy-shift));
-  will-change: opacity, transform;
+  opacity: 1;
+}
+
+.realEstate:not(.portalStarted) .sectionTop {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+
+.portalStarted .sectionTop {
+  animation: portal-copy-in .56s cubic-bezier(.16, .84, .22, 1) .04s backwards;
 }
 
 .city {
@@ -168,11 +167,21 @@
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 182, 87, .42), rgba(255, 174, 73, .08) 46%, transparent 72%);
   filter: blur(20px);
-  opacity: var(--entry-glow-opacity);
-  transform: scale(var(--entry-glow-scale));
   transform-origin: 50% 50%;
-  will-change: opacity, transform;
   pointer-events: none;
+}
+
+.realEstate:not(.portalStarted) .skyGlow,
+.realEstate:not(.portalStarted) .groundLine {
+  opacity: 0;
+}
+
+.portalStarted .skyGlow {
+  animation: portal-glow-in 1s cubic-bezier(.16, .84, .22, 1) .12s backwards;
+}
+
+.portalStarted .groundLine {
+  animation: portal-line-in .68s ease .18s backwards;
 }
 
 .groundLine {
@@ -182,7 +191,6 @@
   bottom: 5.5vh;
   height: 1px;
   background: rgba(255,255,255,.14);
-  opacity: var(--entry-ground-opacity);
 }
 
 .buildingRow {
@@ -209,7 +217,6 @@
   cursor: pointer;
   text-align: left;
   box-shadow: 0 28px 80px rgba(0,0,0,.34);
-  transform: translateY(var(--building-entry-shift, 0vh)) scaleY(var(--building-entry-scale, 1));
   transform-origin: bottom center;
   transition:
     height .78s cubic-bezier(.16,.84,.22,1),
@@ -221,25 +228,50 @@
   will-change: height, flex-grow, transform;
 }
 
-.building:nth-child(1) {
-  --building-entry-opacity: var(--building-1-opacity);
-  --building-entry-shift: var(--building-1-shift);
-  --building-entry-scale: var(--building-1-scale);
-  opacity: var(--building-entry-opacity);
+.realEstate:not(.buildingsStarted) .building {
+  opacity: 0;
+  translate: 0 14vh;
+  scale: 1 .72;
 }
 
-.building:nth-child(2) {
-  --building-entry-opacity: var(--building-2-opacity);
-  --building-entry-shift: var(--building-2-shift);
-  --building-entry-scale: var(--building-2-scale);
-  opacity: var(--building-entry-opacity);
+.buildingsStarted .building:nth-child(1) {
+  animation: building-portal-rise .82s cubic-bezier(.16, .84, .22, 1) 0s backwards;
 }
 
-.building:nth-child(3) {
-  --building-entry-opacity: var(--building-3-opacity);
-  --building-entry-shift: var(--building-3-shift);
-  --building-entry-scale: var(--building-3-scale);
-  opacity: var(--building-entry-opacity);
+.buildingsStarted .building:nth-child(2) {
+  animation: building-portal-rise .88s cubic-bezier(.16, .84, .22, 1) .10s backwards;
+}
+
+.buildingsStarted .building:nth-child(3) {
+  animation: building-portal-rise .94s cubic-bezier(.16, .84, .22, 1) .20s backwards;
+}
+
+@keyframes portal-copy-in {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes portal-glow-in {
+  from { opacity: 0; transform: scale(.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes portal-line-in {
+  from { opacity: 0; transform: scaleX(.35); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes building-portal-rise {
+  from {
+    opacity: 0;
+    translate: 0 14vh;
+    scale: 1 .72;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1 1;
+  }
 }
 
 .buildingOne {
@@ -261,7 +293,7 @@
   --building-flex: 1.6;
   height: 88%;
   z-index: 4;
-  transform: translateY(var(--building-entry-shift, 0vh)) scaleX(1.012) scaleY(var(--building-entry-scale, 1));
+  transform: translateY(0) scaleX(1.012);
   box-shadow: 0 34px 100px rgba(0,0,0,.46);
 }
 
@@ -272,7 +304,7 @@
   --building-flex: .78;
   opacity: .56;
   filter: saturate(.55) brightness(.78);
-  transform: translateY(var(--building-entry-shift, 0vh)) scaleX(.97) scaleY(var(--building-entry-scale, 1));
+  transform: scaleX(.97);
 }
 
 .buildingMedia,
@@ -678,9 +710,6 @@
     height: auto;
     min-height: 92svh;
     border-radius: 24px 24px 0 0;
-    clip-path: inset(0 0 var(--portal-clip) 0 round var(--portal-radius) var(--portal-radius) 0 0);
-    transform: translateY(var(--case-shift)) rotate(var(--case-rotate)) scale(var(--case-scale));
-    filter: brightness(var(--case-brightness));
   }
 
   .schools {
@@ -857,10 +886,6 @@
     height: auto;
   }
 
-  .realEstate {
-    clip-path: none;
-  }
-
   .sectionTop,
   .schoolHeading,
   .city,
@@ -880,5 +905,19 @@
   .building {
     opacity: 1;
     transform: none;
+  }
+
+  .portalCurtain {
+    display: none;
+  }
+
+  .realEstate .sectionTop,
+  .realEstate .skyGlow,
+  .realEstate .groundLine,
+  .realEstate .building {
+    opacity: 1 !important;
+    translate: 0 0;
+    scale: 1 1;
+    animation: none !important;
   }
 }

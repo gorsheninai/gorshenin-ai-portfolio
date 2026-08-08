@@ -93,6 +93,7 @@ export default function PortfolioShowcase() {
   const [selectedCase, setSelectedCase] = useState<CaseSelection>(null);
   const realEstateStageRef = useRef<HTMLElement | null>(null);
   const realEstateFrameRef = useRef<HTMLDivElement | null>(null);
+  const portalCurtainRef = useRef<HTMLDivElement | null>(null);
   const schoolsStageRef = useRef<HTMLElement | null>(null);
   const coarsePointerRef = useRef(false);
 
@@ -145,43 +146,27 @@ export default function PortfolioShowcase() {
       frame = requestAnimationFrame(() => {
         const realEstateStage = realEstateStageRef.current;
         const realEstate = realEstateFrameRef.current;
+        const portalCurtain = portalCurtainRef.current;
         const schoolsStage = schoolsStageRef.current;
-        if (!realEstateStage || !realEstate || !schoolsStage) return;
+        if (!realEstateStage || !realEstate || !portalCurtain || !schoolsStage) return;
 
         const viewport = window.innerHeight;
         const stageTop = realEstateStage.getBoundingClientRect().top;
         const schoolsTop = schoolsStage.getBoundingClientRect().top;
         const clamp = (value: number) => Math.max(0, Math.min(1, value));
-        const easeOut = (value: number) => 1 - Math.pow(1 - value, 3);
         const portalRaw = clamp((viewport - stageTop) / viewport);
         const portal = portalRaw * portalRaw * (3 - 2 * portalRaw);
-        const copy = easeOut(clamp((portalRaw - .08) / .28));
-        const glow = easeOut(clamp((portalRaw - .16) / .42));
-        const ground = easeOut(clamp((portalRaw - .24) / .44));
-        const buildingOne = easeOut(clamp((portalRaw - .28) / .42));
-        const buildingTwo = easeOut(clamp((portalRaw - .36) / .42));
-        const buildingThree = easeOut(clamp((portalRaw - .44) / .42));
         const cover = clamp((viewport - schoolsTop) / viewport);
-        const finalRadius = Math.max(28, Math.min(54, window.innerWidth * .03));
 
-        realEstate.style.setProperty("--portal-clip", `${((1 - portal) * 100).toFixed(2)}%`);
-        realEstate.style.setProperty("--portal-radius", `${(finalRadius + (1 - portal) * 46).toFixed(2)}px`);
-        realEstate.style.setProperty("--case-scale", (1 - cover * .042).toFixed(4));
-        realEstate.style.setProperty("--case-rotate", `${(-cover * .72).toFixed(3)}deg`);
-        realEstate.style.setProperty("--case-shift", `${(-cover * 2.8).toFixed(2)}vh`);
-        realEstate.style.setProperty("--case-brightness", (1 - cover * .28).toFixed(4));
-        realEstate.style.setProperty("--entry-copy-opacity", copy.toFixed(4));
-        realEstate.style.setProperty("--entry-copy-shift", `${((1 - copy) * 3.4).toFixed(2)}vh`);
-        realEstate.style.setProperty("--entry-glow-opacity", glow.toFixed(4));
-        realEstate.style.setProperty("--entry-glow-scale", (.72 + glow * .28).toFixed(4));
-        realEstate.style.setProperty("--entry-ground-opacity", ground.toFixed(4));
+        portalCurtain.style.transform = `translate3d(0, ${(portal * 102).toFixed(2)}%, 0)`;
+        realEstate.style.transform = `translate3d(0, ${(-cover * 2.8).toFixed(2)}vh, 0) rotate(${(-cover * .72).toFixed(3)}deg) scale(${(1 - cover * .042).toFixed(4)})`;
 
-        [buildingOne, buildingTwo, buildingThree].forEach((progress, index) => {
-          const number = index + 1;
-          realEstate.style.setProperty(`--building-${number}-opacity`, progress.toFixed(4));
-          realEstate.style.setProperty(`--building-${number}-shift`, `${((1 - progress) * 18).toFixed(2)}vh`);
-          realEstate.style.setProperty(`--building-${number}-scale`, (.66 + progress * .34).toFixed(4));
-        });
+        if (portalRaw > .08) realEstate.classList.add(styles.portalStarted);
+        if (portalRaw > .38) realEstate.classList.add(styles.buildingsStarted);
+        if (portalRaw < .025) {
+          realEstate.classList.remove(styles.portalStarted);
+          realEstate.classList.remove(styles.buildingsStarted);
+        }
       });
     };
 
@@ -308,6 +293,7 @@ export default function PortfolioShowcase() {
             })}
           </div>
         </div>
+        <div className={styles.portalCurtain} ref={portalCurtainRef} aria-hidden="true" />
         </div>
       </section>
 
