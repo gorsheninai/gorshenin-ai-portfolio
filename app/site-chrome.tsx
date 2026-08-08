@@ -1,15 +1,48 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export default function SiteChrome() {
   const pathname = usePathname();
+  const [pastHero, setPastHero] = useState(false);
+
+  useEffect(() => {
+    if (pathname.startsWith("/studio")) return;
+
+    const hero = document.querySelector<HTMLElement>(".hero");
+    if (!hero) return;
+
+    let frame = 0;
+
+    const updateChrome = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const hideAt = hero.offsetTop + hero.offsetHeight - 110;
+        setPastHero(window.scrollY >= hideAt);
+      });
+    };
+
+    updateChrome();
+    window.addEventListener("scroll", updateChrome, { passive: true });
+    window.addEventListener("resize", updateChrome);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateChrome);
+      window.removeEventListener("resize", updateChrome);
+    };
+  }, [pathname]);
 
   if (pathname.startsWith("/studio")) return null;
 
   return (
-    <div className="gorshenin-chrome" aria-label="Контакты Gorshenin Production">
-      <div className="gorshenin-lockup" aria-label="GORSHENIN PRODUCTION — контент без ограничений">
+    <div className={`gorshenin-chrome ${pastHero ? "is-past-hero" : ""}`} aria-label="Контакты Gorshenin Production">
+      <div
+        className="gorshenin-lockup"
+        aria-label="GORSHENIN PRODUCTION — контент без ограничений"
+        aria-hidden={pastHero}
+      >
         <div className="gorshenin-lockup-title">
           <span>GORSHENIN</span>
           <span className="production-print-word" aria-label="PRODUCTION">
