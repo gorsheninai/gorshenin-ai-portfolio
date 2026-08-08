@@ -79,30 +79,38 @@
   align-items: center;
   justify-content: center;
   height: 48px;
-  border: 1px solid rgba(241, 240, 234, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
-  background: rgba(11, 11, 11, 0.76);
-  color: #f1f0ea;
+  color: #fff;
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, .16);
-  transition: transform .22s ease, background .22s ease, border-color .22s ease;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, .2);
+  transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease, filter .24s ease, border-color .24s ease;
+  will-change: transform;
 }
 
 .gorshenin-social-button:hover {
-  transform: translateY(-2px);
-  border-color: rgba(216, 255, 54, .72);
-  background: rgba(24, 24, 24, .94);
+  transform: translateY(-3px) scale(1.015);
+  border-color: rgba(255, 255, 255, .42);
+  filter: saturate(1.08) brightness(1.04);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .28);
+}
+
+.gorshenin-social-button:active {
+  transform: translateY(-1px) scale(.985);
 }
 
 .gorshenin-instagram {
   width: 48px;
+  background:
+    radial-gradient(circle at 30% 110%, #ffd600 0 18%, #ff7a00 31%, #ff0169 52%, #d300c5 73%, #7638fa 92%);
 }
 
 .gorshenin-telegram {
   gap: 11px;
   min-width: 190px;
   padding: 0 17px 0 20px;
+  background: #229ed9;
   font-family: var(--font-geist-sans), Arial, sans-serif;
   font-size: 12px;
   font-weight: 680;
