@@ -109,7 +109,10 @@ export default function PortfolioShowcase() {
 
   useEffect(() => {
     const projects = document.querySelector<HTMLElement>(".work .projects");
-    const firstProject = projects?.querySelector<HTMLElement>(".project");
+    const legacyProjects = projects
+      ? Array.from(projects.querySelectorAll<HTMLElement>(".project"))
+      : [];
+    const firstProject = legacyProjects[0];
     const work = projects?.closest<HTMLElement>(".work");
     if (!projects || !firstProject) return;
 
@@ -119,13 +122,17 @@ export default function PortfolioShowcase() {
     projects.insertBefore(mount, firstProject);
     work?.classList.add("portfolio-showcase-mounted");
 
-    const previousDisplay = firstProject.style.display;
-    firstProject.style.display = "none";
+    const previousDisplays = legacyProjects.map((project) => project.style.display);
+    legacyProjects.forEach((project) => {
+      project.style.display = "none";
+    });
     const mountFrame = requestAnimationFrame(() => setHost(mount));
 
     return () => {
       cancelAnimationFrame(mountFrame);
-      firstProject.style.display = previousDisplay;
+      legacyProjects.forEach((project, index) => {
+        project.style.display = previousDisplays[index];
+      });
       work?.classList.remove("portfolio-showcase-mounted");
       mount.remove();
       setHost(null);
