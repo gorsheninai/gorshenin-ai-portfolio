@@ -318,7 +318,16 @@
 }
 
 .buildingTwo.buildingActive { height: 94%; }
-.buildingThree.buildingActive { height: 84%; }
+.buildingThree.buildingActive {
+  --building-flex: 2.25;
+  height: 88%;
+}
+
+.buildingThree.buildingActive .previewVideo {
+  object-fit: contain;
+  object-position: center;
+  background: #100d0b;
+}
 
 .building.buildingDimmed {
   --building-flex: .78;
@@ -648,6 +657,12 @@
   gap: 5px 12px;
   align-items: end;
   text-shadow: 0 2px 14px rgba(0,0,0,.62);
+  transition: opacity .36s ease, transform .46s cubic-bezier(.16,.84,.22,1);
+}
+
+.buildingThree.buildingActive .buildingMeta {
+  opacity: 0;
+  transform: translateY(14px);
 }
 
 .buildingMeta > span {
@@ -1927,6 +1942,10 @@
   .buildingThree.buildingActive {
     height: 78%;
     --building-flex: 1.6;
+  }
+
+  .buildingThree.buildingActive {
+    --building-flex: 2.05;
   }
 
   .buildingMeta strong {
