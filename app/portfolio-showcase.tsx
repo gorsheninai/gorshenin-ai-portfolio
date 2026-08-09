@@ -19,6 +19,7 @@ type MediaItem = {
 type CaseSelection =
   | { kind: "building"; index: number }
   | { kind: "school"; index: number }
+  | { kind: "fashion" }
   | null;
 
 const buildings = [
@@ -51,6 +52,8 @@ const schools = [
   { number: "03", name: "STANDUP", keywords: ["standup", "stand up", "стендап"] },
   { number: "04", name: "PROXYGEX", keywords: ["proxygex", "proxy gex", "проксигекс"] },
 ] as const;
+
+const fashionKeywords = ["status team", "status", "показ мод", "fashion", "runway"] as const;
 
 function searchText(item: MediaItem) {
   return `${item.title} ${item.description} ${item.project} ${item.fileName}`.toLowerCase();
@@ -95,6 +98,9 @@ export default function PortfolioShowcase() {
   const realEstateFrameRef = useRef<HTMLDivElement | null>(null);
   const portalCurtainRef = useRef<HTMLDivElement | null>(null);
   const schoolsStageRef = useRef<HTMLElement | null>(null);
+  const schoolsFrameRef = useRef<HTMLDivElement | null>(null);
+  const fashionStageRef = useRef<HTMLElement | null>(null);
+  const fashionFrameRef = useRef<HTMLDivElement | null>(null);
   const coarsePointerRef = useRef(false);
 
   useEffect(() => {
@@ -148,18 +154,24 @@ export default function PortfolioShowcase() {
         const realEstate = realEstateFrameRef.current;
         const portalCurtain = portalCurtainRef.current;
         const schoolsStage = schoolsStageRef.current;
-        if (!realEstateStage || !realEstate || !portalCurtain || !schoolsStage) return;
+        const schoolsFrame = schoolsFrameRef.current;
+        const fashionStage = fashionStageRef.current;
+        const fashionFrame = fashionFrameRef.current;
+        if (!realEstateStage || !realEstate || !portalCurtain || !schoolsStage || !schoolsFrame || !fashionStage || !fashionFrame) return;
 
         const viewport = window.innerHeight;
         const stageTop = realEstateStage.getBoundingClientRect().top;
         const schoolsTop = schoolsStage.getBoundingClientRect().top;
+        const fashionTop = fashionStage.getBoundingClientRect().top;
         const clamp = (value: number) => Math.max(0, Math.min(1, value));
         const portalRaw = clamp((viewport - stageTop) / viewport);
         const portal = portalRaw * portalRaw * (3 - 2 * portalRaw);
         const cover = clamp((viewport - schoolsTop) / viewport);
+        const fashionCover = clamp((viewport - fashionTop) / viewport);
 
         portalCurtain.style.transform = `translate3d(0, ${(portal * 102).toFixed(2)}%, 0)`;
         realEstate.style.transform = `translate3d(0, ${(-cover * 2.8).toFixed(2)}vh, 0) rotate(${(-cover * .72).toFixed(3)}deg) scale(${(1 - cover * .042).toFixed(4)})`;
+        schoolsFrame.style.transform = `translate3d(0, ${(-fashionCover * 2.4).toFixed(2)}vh, 0) rotate(${(fashionCover * .55).toFixed(3)}deg) scale(${(1 - fashionCover * .038).toFixed(4)})`;
 
         if (portalRaw > .08) realEstate.classList.add(styles.portalStarted);
         if (portalRaw > .38) realEstate.classList.add(styles.buildingsStarted);
@@ -167,6 +179,9 @@ export default function PortfolioShowcase() {
           realEstate.classList.remove(styles.portalStarted);
           realEstate.classList.remove(styles.buildingsStarted);
         }
+
+        if (fashionCover > .08) fashionFrame.classList.add(styles.fashionStarted);
+        if (fashionCover < .025) fashionFrame.classList.remove(styles.fashionStarted);
       });
     };
 
@@ -202,21 +217,34 @@ export default function PortfolioShowcase() {
     [media],
   );
 
+  const fashionVideos = useMemo(
+    () => matchingVideos(media, fashionKeywords),
+    [media],
+  );
+
   if (!host) return null;
 
   const selectedVideos = selectedCase
     ? selectedCase.kind === "building"
       ? buildingVideos[selectedCase.index] ?? []
-      : schoolVideos[selectedCase.index] ?? []
+      : selectedCase.kind === "school"
+        ? schoolVideos[selectedCase.index] ?? []
+        : fashionVideos
     : [];
 
   const selectedTitle = selectedCase
     ? selectedCase.kind === "building"
       ? buildings[selectedCase.index]?.title
-      : schools[selectedCase.index]?.name
+      : selectedCase.kind === "school"
+        ? schools[selectedCase.index]?.name
+        : "STATUS TEAM"
     : "";
 
-  const selectedEyebrow = selectedCase?.kind === "building" ? "НЕДВИЖИМОСТЬ" : "ОНЛАЙН-ШКОЛЫ";
+  const selectedEyebrow = selectedCase?.kind === "building"
+    ? "НЕДВИЖИМОСТЬ"
+    : selectedCase?.kind === "school"
+      ? "ОНЛАЙН-ШКОЛЫ"
+      : "ПОКАЗ МОД";
 
   const openBuilding = (index: number) => {
     if (coarsePointerRef.current && armedBuilding !== index) {
@@ -305,7 +333,7 @@ export default function PortfolioShowcase() {
       </section>
 
       <section className={styles.schoolsStage} ref={schoolsStageRef}>
-        <div className={styles.schools}>
+        <div className={styles.schools} ref={schoolsFrameRef}>
         <div className={styles.schoolHeading}>
           <p>02 / КЕЙСЫ</p>
           <h2 id="schools-title">ОНЛАЙН-ШКОЛЫ</h2>
@@ -358,6 +386,50 @@ export default function PortfolioShowcase() {
             );
           })}
         </div>
+        </div>
+      </section>
+
+      <section className={styles.fashionStage} ref={fashionStageRef}>
+        <div className={styles.fashion} ref={fashionFrameRef}>
+          <div className={styles.fashionGhost} aria-hidden="true">STATUS</div>
+          <div className={styles.fashionTopline}>
+            <span>03 / КЕЙС</span>
+            <span>STATUS TEAM / 2026</span>
+          </div>
+
+          <div className={styles.fashionLayout}>
+            <div className={styles.fashionCopy}>
+              <div className={styles.fashionTitle}>
+                <span>ПОКАЗ</span>
+                <span>МОД</span>
+              </div>
+              <em>STATUS TEAM</em>
+              <p>
+                Визуальная история для показа STATUS TEAM. Мода, сценография и digital-визуалы
+                соединяются в единое движение.
+              </p>
+              <button type="button" onClick={() => setSelectedCase({ kind: "fashion" })}>
+                СМОТРЕТЬ КЕЙС <span>↗</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className={styles.fashionMedia}
+              onClick={() => setSelectedCase({ kind: "fashion" })}
+              aria-label="Открыть кейс показа мод STATUS TEAM"
+            >
+              <VideoOrSlot item={fashionVideos[0]} label="STATUS TEAM" />
+              <span className={styles.fashionFilmWash} aria-hidden="true" />
+              <span className={styles.fashionVideoMeta}>STATUS TEAM / FASHION SHOW</span>
+              <span className={styles.fashionArrow}>↗</span>
+              <span className={styles.fashionReveal} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className={styles.fashionTicker} aria-hidden="true">
+            <span>STATUS TEAM — FASHION SHOW — RUNWAY VISUALS — STATUS TEAM — FASHION SHOW — RUNWAY VISUALS —</span>
+          </div>
         </div>
       </section>
       </div>

@@ -21,7 +21,8 @@
 }
 
 .realEstateStage,
-.schoolsStage {
+.schoolsStage,
+.fashionStage {
   position: sticky;
   top: 0;
   width: 100%;
@@ -34,9 +35,11 @@
   padding: 0 6px;
 }
 .schoolsStage { z-index: 2; }
+.fashionStage { z-index: 3; }
 
 .realEstate,
-.schools {
+.schools,
+.fashion {
   position: relative;
   width: 100%;
   height: calc(100svh - 12px);
@@ -50,6 +53,11 @@
   position: relative;
   height: 100svh;
   border-radius: clamp(28px, 3vw, 54px) clamp(28px, 3vw, 54px) 0 0;
+  transform-origin: 50% 8%;
+  will-change: transform;
+}
+
+.schools {
   transform-origin: 50% 8%;
   will-change: transform;
 }
@@ -683,6 +691,326 @@
   color: #0d0d0c;
 }
 
+.fashionStage {
+  padding: 12px 12px 0;
+}
+
+.fashion {
+  --fashion-ink: #11110f;
+  --fashion-paper: #eeeae0;
+  isolation: isolate;
+  color: var(--fashion-ink);
+  background:
+    radial-gradient(circle at 86% 20%, rgba(216, 255, 54, .16), transparent 24%),
+    linear-gradient(120deg, #f4f0e7 0%, var(--fashion-paper) 62%, #e4dfd3 100%);
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+.fashion::before {
+  content: "";
+  position: absolute;
+  z-index: 8;
+  top: 10px;
+  left: 50%;
+  width: 72px;
+  height: 4px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.24);
+  pointer-events: none;
+}
+
+.fashionTopline {
+  position: absolute;
+  z-index: 4;
+  top: 27px;
+  left: 2.2vw;
+  right: 2.2vw;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,0,0,.2);
+  font: 9px/1.2 var(--font-geist-mono), monospace;
+  letter-spacing: .12em;
+}
+
+.fashionGhost {
+  position: absolute;
+  z-index: 0;
+  left: -1.5vw;
+  top: 8vh;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(15,15,13,.1);
+  font: 900 clamp(8rem, 22vw, 27rem)/.72 var(--font-geist-sans), Arial, sans-serif;
+  letter-spacing: -.095em;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate3d(-7vw, 0, 0);
+  opacity: 0;
+}
+
+.fashionLayout {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, .88fr) minmax(360px, .72fr);
+  gap: clamp(28px, 5vw, 90px);
+  width: 100%;
+  height: 100%;
+  padding: 9.5vh 3vw 6vh;
+}
+
+.fashionCopy {
+  align-self: center;
+  min-width: 0;
+  padding-left: 1.2vw;
+}
+
+.fashionTitle {
+  display: flex;
+  flex-direction: column;
+  font: 900 clamp(4.8rem, 10.4vw, 12.5rem)/.7 var(--font-geist-sans), Arial, sans-serif;
+  letter-spacing: -.09em;
+}
+
+.fashionTitle span {
+  display: block;
+  transform: translate3d(-8vw, 0, 0);
+  opacity: 0;
+}
+
+.fashionTitle span:last-child {
+  margin-left: 10vw;
+}
+
+.fashionCopy em {
+  display: block;
+  margin-top: clamp(22px, 4vh, 54px);
+  color: #b8e61d;
+  font: italic 500 clamp(2.2rem, 5.8vw, 7.2rem)/.86 Georgia, "Times New Roman", serif;
+  letter-spacing: -.055em;
+  transform: translate3d(0, 7vh, 0);
+  opacity: 0;
+}
+
+.fashionCopy p {
+  width: min(580px, 82%);
+  margin: clamp(22px, 4vh, 48px) 0 0;
+  font: 400 clamp(.92rem, 1.2vw, 1.3rem)/1.35 var(--font-geist-sans), Arial, sans-serif;
+  letter-spacing: -.025em;
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+
+.fashionCopy button {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: clamp(24px, 4vh, 52px);
+  padding: 0 0 8px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font: 700 10px/1 var(--font-geist-mono), monospace;
+  letter-spacing: .1em;
+  cursor: pointer;
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+}
+
+.fashionCopy button span {
+  font-size: 18px;
+  transition: transform .35s cubic-bezier(.16,.84,.22,1);
+}
+
+.fashionCopy button:hover span {
+  transform: translate3d(5px, -5px, 0);
+}
+
+.fashionMedia {
+  position: relative;
+  align-self: center;
+  justify-self: end;
+  width: min(37vw, 570px);
+  height: min(80svh, 860px);
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: clamp(20px, 2vw, 32px);
+  background: #171717;
+  color: #f4f1e9;
+  cursor: pointer;
+  box-shadow: 0 36px 100px rgba(49, 39, 23, .24);
+  transform: translate3d(8vw, 0, 0) scale(.94);
+  opacity: 0;
+  will-change: transform;
+}
+
+.fashionMedia > video,
+.fashionMedia > .videoSlot {
+  transition: transform 1.2s cubic-bezier(.16,.84,.22,1), filter .7s ease;
+}
+
+.fashionMedia:hover > video,
+.fashionMedia:hover > .videoSlot {
+  transform: scale(1.045);
+}
+
+.fashionFilmWash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.04), transparent 50%, rgba(0,0,0,.58)),
+    linear-gradient(115deg, rgba(216,255,54,.18), transparent 34%);
+}
+
+.fashionFilmWash::before,
+.fashionFilmWash::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  width: 1px;
+  background: rgba(255,255,255,.4);
+  transform: rotate(12deg) translate3d(0, -110%, 0);
+}
+
+.fashionFilmWash::before { left: 34%; }
+.fashionFilmWash::after { left: 62%; animation-delay: .16s !important; }
+
+.fashionVideoMeta {
+  position: absolute;
+  z-index: 3;
+  left: 18px;
+  bottom: 18px;
+  font: 8px/1.2 var(--font-geist-mono), monospace;
+  letter-spacing: .12em;
+}
+
+.fashionArrow {
+  position: absolute;
+  z-index: 3;
+  top: 17px;
+  right: 17px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255,255,255,.62);
+  border-radius: 50%;
+  background: rgba(10,10,9,.14);
+  backdrop-filter: blur(8px);
+  font-size: 19px;
+  transition: transform .42s cubic-bezier(.16,.84,.22,1), background .3s ease, color .3s ease;
+}
+
+.fashionMedia:hover .fashionArrow {
+  color: #11110f;
+  background: #d8ff36;
+  border-color: #d8ff36;
+  transform: rotate(45deg);
+}
+
+.fashionReveal {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #171717;
+  transform-origin: right center;
+}
+
+.fashionTicker {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30px;
+  overflow: hidden;
+  border-top: 1px solid rgba(0,0,0,.2);
+  font: 8px/30px var(--font-geist-mono), monospace;
+  letter-spacing: .14em;
+  white-space: nowrap;
+}
+
+.fashionTicker span {
+  display: inline-block;
+  min-width: 200%;
+  transform: translate3d(-8%, 0, 0);
+}
+
+.fashionStarted .fashionGhost {
+  animation: fashion-ghost-in 1.15s cubic-bezier(.16,.84,.22,1) .08s both;
+}
+
+.fashionStarted .fashionTitle span:first-child {
+  animation: fashion-copy-in .7s cubic-bezier(.16,.84,.22,1) .08s both;
+}
+
+.fashionStarted .fashionTitle span:last-child {
+  animation: fashion-copy-in .78s cubic-bezier(.16,.84,.22,1) .16s both;
+}
+
+.fashionStarted .fashionCopy em {
+  animation: fashion-up-in .78s cubic-bezier(.16,.84,.22,1) .22s both;
+}
+
+.fashionStarted .fashionCopy p,
+.fashionStarted .fashionCopy button {
+  animation: fashion-up-in .65s cubic-bezier(.16,.84,.22,1) .34s both;
+}
+
+.fashionStarted .fashionCopy button { animation-delay: .42s; }
+
+.fashionStarted .fashionMedia {
+  animation: fashion-media-in .9s cubic-bezier(.16,.84,.22,1) .12s both;
+}
+
+.fashionStarted .fashionReveal {
+  animation: fashion-curtain-open .82s cubic-bezier(.76,0,.24,1) .28s both;
+}
+
+.fashionStarted .fashionFilmWash::before,
+.fashionStarted .fashionFilmWash::after {
+  animation: fashion-light-fall .9s cubic-bezier(.16,.84,.22,1) .56s both;
+}
+
+.fashionStarted .fashionTicker span {
+  animation: fashion-ticker 18s linear .9s infinite;
+}
+
+@keyframes fashion-copy-in {
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+@keyframes fashion-up-in {
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+@keyframes fashion-media-in {
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+}
+
+@keyframes fashion-curtain-open {
+  to { transform: scaleX(0); }
+}
+
+@keyframes fashion-light-fall {
+  to { transform: rotate(12deg) translate3d(0, 110%, 0); }
+}
+
+@keyframes fashion-ghost-in {
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+@keyframes fashion-ticker {
+  to { transform: translate3d(-48%, 0, 0); }
+}
+
 .schoolHeading {
   padding: 28px 0 24px;
   border-bottom: 1px solid rgba(0,0,0,.18);
@@ -923,7 +1251,8 @@
   }
 
   .realEstateStage,
-  .schoolsStage {
+  .schoolsStage,
+  .fashionStage {
     position: relative;
     top: auto;
     height: auto;
@@ -948,6 +1277,64 @@
     top: auto;
     height: auto;
     border-radius: 24px 24px 0 0;
+  }
+
+  .fashionStage {
+    padding: 6px 6px 0;
+  }
+
+  .fashion {
+    height: auto;
+    min-height: 100svh;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .fashionLayout {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    height: auto;
+    min-height: 100svh;
+    padding: 86px 18px 52px;
+  }
+
+  .fashionCopy {
+    padding: 0;
+  }
+
+  .fashionTitle {
+    font-size: 23vw;
+  }
+
+  .fashionTitle span:last-child {
+    margin-left: 18vw;
+  }
+
+  .fashionCopy em {
+    margin-top: 24px;
+    font-size: 13vw;
+  }
+
+  .fashionCopy p {
+    width: 100%;
+    max-width: 520px;
+    margin-top: 24px;
+  }
+
+  .fashionCopy button {
+    margin-top: 24px;
+  }
+
+  .fashionMedia {
+    align-self: stretch;
+    width: 100%;
+    height: 72svh;
+    max-height: 760px;
+  }
+
+  .fashionGhost {
+    top: 12vh;
+    font-size: 40vw;
   }
 
   .sectionTop,
@@ -1103,7 +1490,8 @@
   }
 
   .realEstateStage,
-  .schoolsStage {
+  .schoolsStage,
+  .fashionStage {
     position: relative;
     top: auto;
     height: auto;
@@ -1111,7 +1499,8 @@
   }
 
   .realEstate,
-  .schools {
+  .schools,
+  .fashion {
     position: relative;
     top: auto;
     height: auto;
@@ -1120,7 +1509,13 @@
   .sectionTop,
   .schoolHeading,
   .city,
-  .schoolPanels {
+  .schoolPanels,
+  .fashionGhost,
+  .fashionTitle span,
+  .fashionCopy em,
+  .fashionCopy p,
+  .fashionCopy button,
+  .fashionMedia {
     opacity: 1;
     transform: none;
   }
@@ -1149,6 +1544,16 @@
     opacity: 1 !important;
     translate: 0 0;
     scale: 1 1;
+    animation: none !important;
+  }
+
+  .fashionReveal {
+    display: none;
+  }
+
+  .fashionFilmWash::before,
+  .fashionFilmWash::after,
+  .fashionTicker span {
     animation: none !important;
   }
 }
