@@ -58,7 +58,7 @@ const copy = {
     about1: "Работаю на стыке режиссуры, рекламы и генеративных технологий. Сохраняю лица, продукт и логику движения от первого до последнего кадра.", about2: "Подключаюсь на любом этапе: могу усилить готовую идею или полностью провести проект от брифа и раскадровки до звука и финального экспорта.",
     capabilities: "ВОЗМОЖНОСТИ", cap: [["ИИ-РЕКЛАМА", "Рекламные ролики, продуктовые фильмы и спек-проекты"], ["ВИЗУАЛЬНЫЕ ИСТОРИИ", "Сценарии, раскадровки и драматургия кадра"], ["СИСТЕМЫ ПЕРСОНАЖЕЙ", "Консистентные герои и бренд-персонажи"], ["МИРЫ ДЛЯ КАМПАНИЙ", "Ключевые визуалы и серии контента для запуска"]],
     process: "ПРОЦЕСС", processTitle1: "ОТ БРИФА", processTitle2: "ДО ФИНАЛЬНОГО МОНТАЖА.", steps: [["КОНЦЕПЦИЯ", "Находим сильный первый кадр, идею и драматургию."], ["МИР", "Фиксируем героев, стиль, свет и правила визуального мира."], ["ДВИЖЕНИЕ", "Режиссируем движение камеры, актёров и объектов."], ["ФИНАЛ", "Монтаж, саунд-дизайн, цвет и адаптации под площадки."]],
-    contactStatus: "ОТКРЫТ ДЛЯ ИЗБРАННЫХ ПРОЕКТОВ", contact1: "ЕСТЬ ИДЕЯ,", contact2: "КОТОРАЯ КАЖЕТСЯ НЕВОЗМОЖНОЙ?", make: "ДАВАЙТЕ ВОПЛОТИМ ЕЁ ↗", top: "НАВЕРХ ↑", close: "ЗАКРЫТЬ ×", case: "КЕЙС", scope: "МОЯ РОЛЬ", format: "ФОРМАТ", similar: "ХОЧУ ПОХОЖИЙ ПРОЕКТ ↗",
+    contactStatus: "ОТКРЫТ ДЛЯ НОВЫХ ПРОЕКТОВ", contact1: "ЕСТЬ ИДЕЯ?", contact2: "ДАДИМ ЕЙ ДВИЖЕНИЕ.", contactNote: "Реклама, визуальная история или полноценный ИИ-фильм — от концепции до финального кадра.", make: "ОБСУДИТЬ ПРОЕКТ", top: "НАВЕРХ ↑", close: "ЗАКРЫТЬ ×", case: "КЕЙС", scope: "МОЯ РОЛЬ", format: "ФОРМАТ", similar: "ХОЧУ ПОХОЖИЙ ПРОЕКТ ↗",
   },
   en: {
     home: "Home", role: "AI CREATIVE DIRECTOR", worldwide: "AVAILABLE WORLDWIDE", contact: "START A PROJECT ↗",
@@ -69,7 +69,7 @@ const copy = {
     about1: "I work at the intersection of directing, advertising and generative technology, preserving faces, products and motion logic from the first frame to the last.", about2: "I can join at any stage: strengthen an existing idea or lead the entire project from brief and storyboard to sound and final delivery.",
     capabilities: "CAPABILITIES", cap: [["AI COMMERCIALS", "Commercials, product films and spec work"], ["VISUAL STORYTELLING", "Scripts, storyboards and visual drama"], ["CHARACTER SYSTEMS", "Consistent heroes and brand characters"], ["CAMPAIGN WORLDS", "Key visuals and content systems for launches"]],
     process: "PROCESS", processTitle1: "FROM BRIEF", processTitle2: "TO FINAL CUT.", steps: [["CONCEPT", "We find the hook, idea and dramatic structure."], ["WORLD", "We lock characters, style, lighting and visual rules."], ["MOTION", "We direct camera, performers and object movement."], ["FINISH", "Edit, sound design, colour and platform versions."]],
-    contactStatus: "AVAILABLE FOR SELECTED PROJECTS", contact1: "HAVE AN IDEA", contact2: "THAT FEELS IMPOSSIBLE?", make: "LET’S MAKE IT REAL ↗", top: "BACK TO TOP ↑", close: "CLOSE ×", case: "CASE", scope: "SCOPE", format: "FORMAT", similar: "I WANT A SIMILAR PROJECT ↗",
+    contactStatus: "OPEN FOR NEW PROJECTS", contact1: "HAVE AN IDEA?", contact2: "LET’S PUT IT IN MOTION.", contactNote: "A commercial, visual story or complete AI film — from concept to final frame.", make: "START A PROJECT", top: "BACK TO TOP ↑", close: "CLOSE ×", case: "CASE", scope: "SCOPE", format: "FORMAT", similar: "I WANT A SIMILAR PROJECT ↗",
   },
 } as const;
 
@@ -79,6 +79,7 @@ export default function Home() {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const aboutVideoRef = useRef<HTMLVideoElement | null>(null);
   const aboutSectionRef = useRef<HTMLElement | null>(null);
+  const contactSectionRef = useRef<HTMLElement | null>(null);
   const c = copy[lang];
   const selected = useMemo(() => projects.find((project) => project.number === selectedNumber) ?? null, [selectedNumber]);
 
@@ -129,6 +130,23 @@ export default function Home() {
     const observer = new IntersectionObserver(
       ([entry]) => section.classList.toggle("about-is-active", entry.intersectionRatio >= .42),
       { threshold: [0, .42, .7] },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const section = contactSectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          section.classList.add("contact-is-visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: .24 },
     );
     observer.observe(section);
     return () => observer.disconnect();
@@ -234,9 +252,18 @@ export default function Home() {
         <div className="cap-list">{c.cap.map(([title, description], index) => <div className="cap-row" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p><b>↗</b></div>)}</div>
       </section>
 
-      <section className="contact" id="contact">
-        <p className="eyebrow"><span className="status-dot" /> {c.contactStatus}</p><h2>{c.contact1}<br />{c.contact2.includes("?") ? <i>{c.contact2}</i> : c.contact2}</h2>
-        <a className="contact-mail" href="mailto:gorsheninai2001@gmail.com">{c.make}</a>
+      <section ref={contactSectionRef} className="contact" id="contact">
+        <div className="contact-backdrop" aria-hidden="true"><span>START</span><span>START</span></div>
+        <span className="contact-rule" aria-hidden="true" />
+        <div className="contact-top"><p className="eyebrow"><span className="status-dot" /> {c.contactStatus}</p><span>10 / CONTACT</span></div>
+        <h2>
+          <span className="contact-line"><b>{c.contact1}</b></span>
+          <span className="contact-line contact-line-acid"><i>{c.contact2}</i></span>
+        </h2>
+        <div className="contact-action">
+          <p>{c.contactNote}</p>
+          <a className="contact-mail" href="https://t.me/gorshenin_ai" target="_blank" rel="noreferrer"><span>{c.make}</span><b>↗</b></a>
+        </div>
         <footer><a href="https://instagram.com/gorshenin.ai" target="_blank" rel="noreferrer">INSTAGRAM ↗</a><span>{lang === "ru" ? "ВЛАД ГОРШЕНИН" : "VLAD GORSHENIN"} · 2026</span><a href="#top">{c.top}</a></footer>
       </section>
 
