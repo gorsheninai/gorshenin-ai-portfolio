@@ -393,7 +393,8 @@ export default function PortfolioShowcase() {
         <div className={styles.fashion} ref={fashionFrameRef}>
           <div className={styles.fashionGhost} aria-hidden="true">STATUS</div>
           <div className={styles.fashionTopline}>
-            <span>03 / КЕЙС</span>
+            <span>03 / КЕЙСЫ</span>
+            <h2>FASHION-ПРОЕКТЫ</h2>
             <span>STATUS TEAM / 2026</span>
           </div>
 

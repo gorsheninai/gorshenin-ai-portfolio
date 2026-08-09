@@ -727,12 +727,27 @@
   top: 27px;
   left: 2.2vw;
   right: 2.2vw;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 24px;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(0,0,0,.2);
+}
+
+.fashionTopline span {
   font: 9px/1.2 var(--font-geist-mono), monospace;
   letter-spacing: .12em;
+}
+
+.fashionTopline span:last-child {
+  text-align: right;
+}
+
+.fashionTopline h2 {
+  margin: 0;
+  font: 800 clamp(1.1rem, 2vw, 2.25rem)/.9 var(--font-geist-sans), Arial, sans-serif;
+  letter-spacing: -.055em;
 }
 
 .fashionGhost {
@@ -1355,6 +1370,16 @@
   .fashionGhost {
     top: 12vh;
     font-size: 40vw;
+  }
+
+  .fashionTopline {
+    grid-template-columns: 1fr auto;
+    left: 18px;
+    right: 18px;
+  }
+
+  .fashionTopline span:last-child {
+    display: none;
   }
 
   .sectionTop,
