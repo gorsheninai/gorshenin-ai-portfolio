@@ -244,7 +244,7 @@ export default function PortfolioShowcase() {
     ? "НЕДВИЖИМОСТЬ"
     : selectedCase?.kind === "school"
       ? "ОНЛАЙН-ШКОЛЫ"
-      : "ПОКАЗ МОД";
+      : "FASHION SHOW";
 
   const openBuilding = (index: number) => {
     if (coarsePointerRef.current && armedBuilding !== index) {
@@ -400,8 +400,8 @@ export default function PortfolioShowcase() {
           <div className={styles.fashionLayout}>
             <div className={styles.fashionCopy}>
               <div className={styles.fashionTitle}>
-                <span>ПОКАЗ</span>
-                <span>МОД</span>
+                <span>FASHION</span>
+                <span>SHOW</span>
               </div>
               <em>STATUS TEAM</em>
               <p>

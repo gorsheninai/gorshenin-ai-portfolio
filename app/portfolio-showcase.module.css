@@ -770,7 +770,7 @@
 .fashionTitle {
   display: flex;
   flex-direction: column;
-  font: 900 clamp(4.4rem, 7.9vw, 9.5rem)/.72 var(--font-geist-sans), Arial, sans-serif;
+  font: 900 clamp(4rem, 6.7vw, 8rem)/.72 var(--font-geist-sans), Arial, sans-serif;
   letter-spacing: -.09em;
 }
 
@@ -1322,7 +1322,7 @@
   }
 
   .fashionTitle {
-    font-size: 23vw;
+    font-size: 20.5vw;
   }
 
   .fashionTitle span:last-child {
