@@ -754,23 +754,23 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, .88fr) minmax(360px, .72fr);
-  gap: clamp(28px, 5vw, 90px);
+  grid-template-columns: minmax(300px, .58fr) minmax(560px, 1fr);
+  gap: clamp(24px, 3vw, 58px);
   width: 100%;
   height: 100%;
-  padding: 9.5vh 3vw 6vh;
+  padding: 9.5vh 2.5vw 6vh;
 }
 
 .fashionCopy {
   align-self: center;
   min-width: 0;
-  padding-left: 1.2vw;
+  padding-left: .6vw;
 }
 
 .fashionTitle {
   display: flex;
   flex-direction: column;
-  font: 900 clamp(4.8rem, 10.4vw, 12.5rem)/.7 var(--font-geist-sans), Arial, sans-serif;
+  font: 900 clamp(4.4rem, 7.9vw, 9.5rem)/.72 var(--font-geist-sans), Arial, sans-serif;
   letter-spacing: -.09em;
 }
 
@@ -781,21 +781,21 @@
 }
 
 .fashionTitle span:last-child {
-  margin-left: 10vw;
+  margin-left: 5.5vw;
 }
 
 .fashionCopy em {
   display: block;
   margin-top: clamp(22px, 4vh, 54px);
   color: #b8e61d;
-  font: italic 500 clamp(2.2rem, 5.8vw, 7.2rem)/.86 Georgia, "Times New Roman", serif;
+  font: italic 500 clamp(2rem, 4.1vw, 5.2rem)/.86 Georgia, "Times New Roman", serif;
   letter-spacing: -.055em;
   transform: translate3d(0, 7vh, 0);
   opacity: 0;
 }
 
 .fashionCopy p {
-  width: min(580px, 82%);
+  width: min(520px, 92%);
   margin: clamp(22px, 4vh, 48px) 0 0;
   font: 400 clamp(.92rem, 1.2vw, 1.3rem)/1.35 var(--font-geist-sans), Arial, sans-serif;
   letter-spacing: -.025em;
@@ -833,12 +833,13 @@
   position: relative;
   align-self: center;
   justify-self: end;
-  width: min(37vw, 570px);
-  height: min(80svh, 860px);
+  width: min(60vw, 1180px);
+  height: auto;
+  aspect-ratio: 16 / 9;
   padding: 0;
   overflow: hidden;
   border: 0;
-  border-radius: clamp(20px, 2vw, 32px);
+  border-radius: clamp(18px, 1.7vw, 30px);
   background: #171717;
   color: #f4f1e9;
   cursor: pointer;
@@ -846,6 +847,16 @@
   transform: translate3d(8vw, 0, 0) scale(.94);
   opacity: 0;
   will-change: transform;
+}
+
+.fashionMedia::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 12px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: clamp(12px, 1.2vw, 22px);
+  pointer-events: none;
 }
 
 .fashionMedia > video,
@@ -1239,6 +1250,14 @@
   .buildingMeta { left: 12px; right: 12px; bottom: 12px; }
   .buildingMeta small { display: none; }
   .schoolPanelActive { flex-basis: 48%; }
+  .fashionLayout {
+    grid-template-columns: minmax(230px, .54fr) minmax(0, 1fr);
+    gap: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .fashionMedia { width: 61vw; }
+  .fashionCopy p { width: 100%; }
 }
 
 @media (max-width: 760px) {
@@ -1328,8 +1347,9 @@
   .fashionMedia {
     align-self: stretch;
     width: 100%;
-    height: 72svh;
-    max-height: 760px;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 16 / 9;
   }
 
   .fashionGhost {
