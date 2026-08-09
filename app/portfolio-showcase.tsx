@@ -45,7 +45,7 @@ const buildings = [
     title: "НОВЫЙ КЕЙС",
     subtitle: "ЖИЛАЯ НЕДВИЖИМОСТЬ",
     shape: "buildingThree",
-    video: "/pro3.mp4",
+    video: "/pro4.mp4",
     keywords: ["недвижимость", "real estate", "жк"],
   },
 ] as const;
