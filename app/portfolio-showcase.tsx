@@ -51,10 +51,10 @@ const buildings = [
 ] as const;
 
 const schools = [
-  { number: "01", name: "MACARUN", video: "/pro1.mp4", keywords: ["macarun", "макарун"] },
-  { number: "02", name: "EASYCODE", video: "/pro2.mp4", keywords: ["easycode", "easycod", "изи код"] },
-  { number: "03", name: "STANDUP", video: "/pro3.mp4", keywords: ["standup", "stand up", "стендап"] },
-  { number: "04", name: "PROXYGEX", video: "/pro4.mp4", keywords: ["proxygex", "proxy gex", "проксигекс"] },
+  { number: "01", name: "MACARUN", video: "/on1.mp4", keywords: ["macarun", "макарун"] },
+  { number: "02", name: "EASYCODE", video: "/on2.mp4", keywords: ["easycode", "easycod", "изи код"] },
+  { number: "03", name: "STANDUP", video: "/on3.mp4", keywords: ["standup", "stand up", "стендап"] },
+  { number: "04", name: "PROXYGEX", video: "/on4.mp4", keywords: ["proxygex", "proxy gex", "проксигекс"] },
 ] as const;
 
 const fashionKeywords = ["status team", "status", "показ мод", "fashion", "runway"] as const;
@@ -289,7 +289,9 @@ export default function PortfolioShowcase() {
     ? buildings[selectedCase.index]?.video
     : selectedCase?.kind === "school"
       ? schools[selectedCase.index]?.video
-      : undefined;
+      : selectedCase?.kind === "fashion"
+        ? "/status.mp4"
+        : undefined;
 
   const selectedEyebrow = selectedCase?.kind === "building"
     ? "НЕДВИЖИМОСТЬ"
@@ -471,7 +473,7 @@ export default function PortfolioShowcase() {
               onClick={() => setSelectedCase({ kind: "fashion" })}
               aria-label="Открыть кейс показа мод STATUS TEAM"
             >
-              <VideoOrSlot item={fashionVideos[0]} label="STATUS TEAM" />
+              <VideoOrSlot src="/status.mp4" item={fashionVideos[0]} label="STATUS TEAM" />
               <span className={styles.fashionFilmWash} aria-hidden="true" />
               <span className={styles.fashionVideoMeta}>STATUS TEAM / FASHION SHOW</span>
               <span className={styles.fashionArrow}>↗</span>
