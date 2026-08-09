@@ -20,6 +20,7 @@ type CaseSelection =
   | { kind: "building"; index: number }
   | { kind: "school"; index: number }
   | { kind: "fashion" }
+  | { kind: "tv" }
   | null;
 
 const buildings = [
@@ -54,6 +55,7 @@ const schools = [
 ] as const;
 
 const fashionKeywords = ["status team", "status", "показ мод", "fashion", "runway"] as const;
+const tvKeywords = ["тв", "tv", "broadcast", "телевиз", "эфир", "металлист", "metalist", "metallist"] as const;
 
 function searchText(item: MediaItem) {
   return `${item.title} ${item.description} ${item.project} ${item.fileName}`.toLowerCase();
@@ -101,6 +103,8 @@ export default function PortfolioShowcase() {
   const schoolsFrameRef = useRef<HTMLDivElement | null>(null);
   const fashionStageRef = useRef<HTMLElement | null>(null);
   const fashionFrameRef = useRef<HTMLDivElement | null>(null);
+  const tvStageRef = useRef<HTMLElement | null>(null);
+  const tvFrameRef = useRef<HTMLDivElement | null>(null);
   const coarsePointerRef = useRef(false);
 
   useEffect(() => {
@@ -157,21 +161,26 @@ export default function PortfolioShowcase() {
         const schoolsFrame = schoolsFrameRef.current;
         const fashionStage = fashionStageRef.current;
         const fashionFrame = fashionFrameRef.current;
-        if (!realEstateStage || !realEstate || !portalCurtain || !schoolsStage || !schoolsFrame || !fashionStage || !fashionFrame) return;
+        const tvStage = tvStageRef.current;
+        const tvFrame = tvFrameRef.current;
+        if (!realEstateStage || !realEstate || !portalCurtain || !schoolsStage || !schoolsFrame || !fashionStage || !fashionFrame || !tvStage || !tvFrame) return;
 
         const viewport = window.innerHeight;
         const stageTop = realEstateStage.getBoundingClientRect().top;
         const schoolsTop = schoolsStage.getBoundingClientRect().top;
         const fashionTop = fashionStage.getBoundingClientRect().top;
+        const tvTop = tvStage.getBoundingClientRect().top;
         const clamp = (value: number) => Math.max(0, Math.min(1, value));
         const portalRaw = clamp((viewport - stageTop) / viewport);
         const portal = portalRaw * portalRaw * (3 - 2 * portalRaw);
         const cover = clamp((viewport - schoolsTop) / viewport);
         const fashionCover = clamp((viewport - fashionTop) / viewport);
+        const tvCover = clamp((viewport - tvTop) / viewport);
 
         portalCurtain.style.transform = `translate3d(0, ${(portal * 102).toFixed(2)}%, 0)`;
         realEstate.style.transform = `translate3d(0, ${(-cover * 2.8).toFixed(2)}vh, 0) rotate(${(-cover * .72).toFixed(3)}deg) scale(${(1 - cover * .042).toFixed(4)})`;
         schoolsFrame.style.transform = `translate3d(0, ${(-fashionCover * 2.4).toFixed(2)}vh, 0) rotate(${(fashionCover * .55).toFixed(3)}deg) scale(${(1 - fashionCover * .038).toFixed(4)})`;
+        fashionFrame.style.transform = `translate3d(0, ${(-tvCover * 2.2).toFixed(2)}vh, 0) rotate(${(-tvCover * .48).toFixed(3)}deg) scale(${(1 - tvCover * .036).toFixed(4)})`;
 
         if (portalRaw > .08) realEstate.classList.add(styles.portalStarted);
         if (portalRaw > .38) realEstate.classList.add(styles.buildingsStarted);
@@ -182,6 +191,9 @@ export default function PortfolioShowcase() {
 
         if (fashionCover > .08) fashionFrame.classList.add(styles.fashionStarted);
         if (fashionCover < .025) fashionFrame.classList.remove(styles.fashionStarted);
+
+        if (tvCover > .08) tvFrame.classList.add(styles.tvStarted);
+        if (tvCover < .025) tvFrame.classList.remove(styles.tvStarted);
       });
     };
 
@@ -222,6 +234,11 @@ export default function PortfolioShowcase() {
     [media],
   );
 
+  const tvVideos = useMemo(
+    () => matchingVideos(media, tvKeywords),
+    [media],
+  );
+
   if (!host) return null;
 
   const selectedVideos = selectedCase
@@ -229,7 +246,9 @@ export default function PortfolioShowcase() {
       ? buildingVideos[selectedCase.index] ?? []
       : selectedCase.kind === "school"
         ? schoolVideos[selectedCase.index] ?? []
-        : fashionVideos
+        : selectedCase.kind === "fashion"
+          ? fashionVideos
+          : tvVideos
     : [];
 
   const selectedTitle = selectedCase
@@ -237,14 +256,18 @@ export default function PortfolioShowcase() {
       ? buildings[selectedCase.index]?.title
       : selectedCase.kind === "school"
         ? schools[selectedCase.index]?.name
-        : "STATUS TEAM"
+        : selectedCase.kind === "fashion"
+          ? "STATUS TEAM"
+          : "ЖК МЕТАЛЛИСТ"
     : "";
 
   const selectedEyebrow = selectedCase?.kind === "building"
     ? "НЕДВИЖИМОСТЬ"
     : selectedCase?.kind === "school"
       ? "ОНЛАЙН-ШКОЛЫ"
-      : "FASHION SHOW";
+      : selectedCase?.kind === "fashion"
+        ? "FASHION SHOW"
+        : "ТВ-РЕКЛАМА";
 
   const openBuilding = (index: number) => {
     if (coarsePointerRef.current && armedBuilding !== index) {
@@ -430,6 +453,59 @@ export default function PortfolioShowcase() {
 
           <div className={styles.fashionTicker} aria-hidden="true">
             <span>STATUS TEAM — FASHION SHOW — RUNWAY VISUALS — STATUS TEAM — FASHION SHOW — RUNWAY VISUALS —</span>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.tvStage} ref={tvStageRef}>
+        <div className={styles.tv} ref={tvFrameRef}>
+          <div className={styles.tvGhost} aria-hidden="true">ON AIR</div>
+          <div className={styles.tvTopline}>
+            <span>04 / КЕЙСЫ</span>
+            <h2>ТВ-РЕКЛАМА</h2>
+            <span>BROADCAST / 16:9</span>
+          </div>
+
+          <div className={styles.tvLayout}>
+            <div className={styles.tvCopy}>
+              <div className={styles.onAirLabel}><i /> В ЭФИРЕ</div>
+              <h3><span>ЖК</span><span>МЕТАЛЛИСТ</span></h3>
+              <strong>РЕКЛАМНАЯ ИСТОРИЯ ДЛЯ ТВ</strong>
+              <p>
+                История героини, города и места, которое становится домом. Кинематографичный
+                телевизионный ролик для жилого комплекса «Металлист».
+              </p>
+              <button type="button" onClick={() => setSelectedCase({ kind: "tv" })}>
+                СМОТРЕТЬ КЕЙС <span>↗</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className={styles.tvSet}
+              onClick={() => setSelectedCase({ kind: "tv" })}
+              aria-label="Открыть кейс телевизионной рекламы ЖК Металлист"
+            >
+              <span className={styles.tvAmbient} aria-hidden="true" />
+              <div className={styles.tvHardware}>
+                <div className={styles.tvPicture}>
+                  <VideoOrSlot item={tvVideos[0]} label="ЖК МЕТАЛЛИСТ / TV" />
+                  <span className={styles.tvScreenShade} aria-hidden="true" />
+                  <span className={styles.tvSafeFrame} aria-hidden="true" />
+                  <span className={styles.tvBroadcastLabel}><i /> ON AIR</span>
+                  <span className={styles.tvTimecode}>00:00:12:08</span>
+                  <span className={styles.tvChannel}>GORSHENIN / BROADCAST</span>
+                  <span className={styles.tvCaseArrow}>↗</span>
+                </div>
+              </div>
+              <span className={styles.tvPedestal} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className={styles.tvTimeline} aria-hidden="true">
+            <span className={styles.tvTimelineLabel}>00:00</span>
+            <span className={styles.tvTicks}><i /></span>
+            <span className={styles.tvTimelineLabel}>00:30</span>
           </div>
         </div>
       </section>
