@@ -51,10 +51,10 @@ const buildings = [
 ] as const;
 
 const schools = [
-  { number: "01", name: "MACARUN", keywords: ["macarun", "макарун"] },
-  { number: "02", name: "EASYCODE", keywords: ["easycode", "easycod", "изи код"] },
-  { number: "03", name: "STANDUP", keywords: ["standup", "stand up", "стендап"] },
-  { number: "04", name: "PROXYGEX", keywords: ["proxygex", "proxy gex", "проксигекс"] },
+  { number: "01", name: "MACARUN", video: "/pro1.mp4", keywords: ["macarun", "макарун"] },
+  { number: "02", name: "EASYCODE", video: "/pro2.mp4", keywords: ["easycode", "easycod", "изи код"] },
+  { number: "03", name: "STANDUP", video: "/pro3.mp4", keywords: ["standup", "stand up", "стендап"] },
+  { number: "04", name: "PROXYGEX", video: "/pro4.mp4", keywords: ["proxygex", "proxy gex", "проксигекс"] },
 ] as const;
 
 const fashionKeywords = ["status team", "status", "показ мод", "fashion", "runway"] as const;
@@ -287,7 +287,9 @@ export default function PortfolioShowcase() {
 
   const selectedStaticVideo = selectedCase?.kind === "building"
     ? buildings[selectedCase.index]?.video
-    : undefined;
+    : selectedCase?.kind === "school"
+      ? schools[selectedCase.index]?.video
+      : undefined;
 
   const selectedEyebrow = selectedCase?.kind === "building"
     ? "НЕДВИЖИМОСТЬ"
@@ -422,7 +424,7 @@ export default function PortfolioShowcase() {
                     <span className={styles.schoolHint}>НАВЕДИ ↗</span>
                   </div>
                   <div className={styles.schoolBack}>
-                    <VideoOrSlot item={primaryVideo} label={school.name} />
+                    <VideoOrSlot src={school.video} item={primaryVideo} label={school.name} active={isActive} />
                     <div className={styles.schoolBackOverlay} />
                     <div className={styles.schoolBackCopy}>
                       <span>{school.number}</span>
