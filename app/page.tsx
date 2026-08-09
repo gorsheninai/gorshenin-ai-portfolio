@@ -258,7 +258,10 @@ export default function Home() {
         <div className="contact-top"><p className="eyebrow"><span className="status-dot" /> {c.contactStatus}</p><span>10 / CONTACT</span></div>
         <h2>
           <span className="contact-line"><b>{c.contact1}</b></span>
-          <span className="contact-line contact-line-acid"><i>{c.contact2}</i></span>
+          <span className="contact-line contact-line-acid">
+            <i>{c.contact2}</i>
+            <span className="contact-car-pass" aria-hidden="true"><span className="contact-car-shadow" /><span className="contact-headlights" /><span className="contact-tail" /></span>
+          </span>
         </h2>
         <div className="contact-action">
           <p>{c.contactNote}</p>
