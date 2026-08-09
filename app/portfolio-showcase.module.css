@@ -1522,14 +1522,14 @@
 }
 
 .schoolPanelActive {
-  flex-grow: 1.92;
-  flex-basis: 42%;
+  flex-grow: 1.08;
+  flex-basis: 27%;
 }
 
 .schoolPanelCompressed {
-  flex-grow: .68;
-  flex-basis: 18%;
-  opacity: .66;
+  flex-grow: .96;
+  flex-basis: 24%;
+  opacity: .72;
 }
 
 .schoolInner {
@@ -1609,10 +1609,16 @@
   color: white;
 }
 
+.schoolBack .previewVideo {
+  object-fit: cover;
+  object-position: center;
+  background: #0b0b0b;
+}
+
 .schoolBackOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.12) 45%, rgba(0,0,0,.76));
+  background: linear-gradient(180deg, rgba(0,0,0,.04), transparent 54%, rgba(0,0,0,.68));
 }
 
 .schoolBackCopy {
