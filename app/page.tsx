@@ -234,12 +234,6 @@ export default function Home() {
         <div className="cap-list">{c.cap.map(([title, description], index) => <div className="cap-row" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p><b>↗</b></div>)}</div>
       </section>
 
-      <section className="process" id="process">
-        <div className="process-head"><div className="section-label">{c.process} / 09</div><h2>{c.processTitle1}<br /><i>{c.processTitle2}</i></h2></div>
-        <div className="process-grid">{c.steps.map(([title, text], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
-        <div className="tool-line">SEEDANCE 2.0 / KLING 3.0 / VEO 3.1 / GPT IMAGE / MIDJOURNEY / CAPCUT / ELEVENLABS / SUNO</div>
-      </section>
-
       <section className="contact" id="contact">
         <p className="eyebrow"><span className="status-dot" /> {c.contactStatus}</p><h2>{c.contact1}<br />{c.contact2.includes("?") ? <i>{c.contact2}</i> : c.contact2}</h2>
         <a className="contact-mail" href="mailto:gorsheninai2001@gmail.com">{c.make}</a>
