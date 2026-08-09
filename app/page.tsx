@@ -78,6 +78,7 @@ export default function Home() {
   const [selectedNumber, setSelectedNumber] = useState<string | null>(null);
   const [media, setMedia] = useState<MediaItem[]>([]);
   const aboutVideoRef = useRef<HTMLVideoElement | null>(null);
+  const aboutSectionRef = useRef<HTMLElement | null>(null);
   const c = copy[lang];
   const selected = useMemo(() => projects.find((project) => project.number === selectedNumber) ?? null, [selectedNumber]);
 
@@ -119,6 +120,18 @@ export default function Home() {
       window.removeEventListener("touchstart", playVideo);
       document.removeEventListener("visibilitychange", resumeWhenVisible);
     };
+  }, []);
+
+  useEffect(() => {
+    const section = aboutSectionRef.current;
+    if (!section || !window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => section.classList.toggle("about-is-active", entry.intersectionRatio >= .42),
+      { threshold: [0, .42, .7] },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -189,8 +202,29 @@ export default function Home() {
 
       <div className="ticker" aria-hidden="true"><div>{c.ticker}</div></div>
 
-      <section className="about" id="about">
+      <section
+        ref={aboutSectionRef}
+        className="about"
+        id="about"
+        onPointerEnter={(event) => {
+          if (event.pointerType === "touch") return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          event.currentTarget.style.setProperty("--spot-x", `${event.clientX - rect.left}px`);
+          event.currentTarget.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
+          event.currentTarget.classList.add("about-is-active");
+        }}
+        onPointerMove={(event) => {
+          if (event.pointerType === "touch") return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          event.currentTarget.style.setProperty("--spot-x", `${event.clientX - rect.left}px`);
+          event.currentTarget.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType !== "touch") event.currentTarget.classList.remove("about-is-active");
+        }}
+      >
         <video ref={aboutVideoRef} className="about-background" src="/present.mp4" autoPlay muted loop playsInline preload="auto" disablePictureInPicture aria-hidden="true" tabIndex={-1} />
+        <span className="about-darkness" aria-hidden="true" />
         <div className="section-label">{c.about} / 07</div>
         <div className="about-copy"><p className="eyebrow">{c.creator}</p><h2>{c.aboutTitle1}<br /><em>{c.aboutTitle2}</em></h2><div className="about-grid"><p>{c.about1}</p><p>{c.about2}</p></div></div>
       </section>
