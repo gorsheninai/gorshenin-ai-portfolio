@@ -7,16 +7,25 @@
 }
 
 :global(.work.portfolio-showcase-mounted) {
-  padding-top: 0;
+  padding: 0;
+}
+
+:global(.work.portfolio-showcase-mounted > .section-head) {
+  display: none;
 }
 
 :global(.work.portfolio-showcase-mounted > .projects) {
-  margin-top: 0;
+  gap: 0;
+  margin: 0;
+}
+
+:global(.work.portfolio-showcase-mounted + .uploaded-work) {
+  display: none;
 }
 
 .caseDeck {
   position: relative;
-  padding-bottom: 84svh;
+  padding-bottom: 0;
   background: #0b0b0b;
 }
 
