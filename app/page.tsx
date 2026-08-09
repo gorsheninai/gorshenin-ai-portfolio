@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Lang = "ru" | "en";
 type MediaItem = {
@@ -77,6 +77,7 @@ export default function Home() {
   const [lang, setLang] = useState<Lang>("ru");
   const [selectedNumber, setSelectedNumber] = useState<string | null>(null);
   const [media, setMedia] = useState<MediaItem[]>([]);
+  const aboutVideoRef = useRef<HTMLVideoElement | null>(null);
   const c = copy[lang];
   const selected = useMemo(() => projects.find((project) => project.number === selectedNumber) ?? null, [selectedNumber]);
 
@@ -87,6 +88,38 @@ export default function Home() {
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  useEffect(() => {
+    const video = aboutVideoRef.current;
+    if (!video) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+    video.playsInline = true;
+
+    const playVideo = () => {
+      if (!video.paused) return;
+      void video.play().catch(() => undefined);
+    };
+    const resumeWhenVisible = () => {
+      if (!document.hidden) playVideo();
+    };
+
+    playVideo();
+    video.addEventListener("loadeddata", playVideo);
+    video.addEventListener("canplay", playVideo);
+    window.addEventListener("pointerdown", playVideo, { passive: true });
+    window.addEventListener("touchstart", playVideo, { passive: true });
+    document.addEventListener("visibilitychange", resumeWhenVisible);
+
+    return () => {
+      video.removeEventListener("loadeddata", playVideo);
+      video.removeEventListener("canplay", playVideo);
+      window.removeEventListener("pointerdown", playVideo);
+      window.removeEventListener("touchstart", playVideo);
+      document.removeEventListener("visibilitychange", resumeWhenVisible);
+    };
+  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => event.key === "Escape" && setSelectedNumber(null);
@@ -157,6 +190,7 @@ export default function Home() {
       <div className="ticker" aria-hidden="true"><div>{c.ticker}</div></div>
 
       <section className="about" id="about">
+        <video ref={aboutVideoRef} className="about-background" src="/present.mp4" autoPlay muted loop playsInline preload="auto" disablePictureInPicture aria-hidden="true" tabIndex={-1} />
         <div className="section-label">{c.about} / 07</div>
         <div className="about-copy"><p className="eyebrow">{c.creator}</p><h2>{c.aboutTitle1}<br /><em>{c.aboutTitle2}</em></h2><div className="about-grid"><p>{c.about1}</p><p>{c.about2}</p></div></div>
       </section>
