@@ -29,6 +29,7 @@ const buildings = [
     title: "ЛИСТ",
     subtitle: "ЖИЛАЯ НЕДВИЖИМОСТЬ",
     shape: "buildingOne",
+    video: "/pro1.mp4",
     keywords: ["лист", "list"],
   },
   {
@@ -36,6 +37,7 @@ const buildings = [
     title: "МЕТАЛЛИСТ",
     subtitle: "ЖИЛАЯ НЕДВИЖИМОСТЬ",
     shape: "buildingTwo",
+    video: "/pro2.mp4",
     keywords: ["металлист", "metalist", "metallist"],
   },
   {
@@ -43,6 +45,7 @@ const buildings = [
     title: "НОВЫЙ КЕЙС",
     subtitle: "ЖИЛАЯ НЕДВИЖИМОСТЬ",
     shape: "buildingThree",
+    video: "/pro3.mp4",
     keywords: ["недвижимость", "real estate", "жк"],
   },
 ] as const;
@@ -65,8 +68,21 @@ function matchingVideos(media: MediaItem[], keywords: readonly string[]) {
   return media.filter((item) => item.mediaType === "video" && keywords.some((keyword) => searchText(item).includes(keyword)));
 }
 
-function VideoOrSlot({ item, label }: { item?: MediaItem; label: string }) {
-  if (!item) {
+function VideoOrSlot({ item, src, label, active = true }: { item?: MediaItem; src?: string; label: string; active?: boolean }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoSrc = src ?? (item ? `/api/media/${item.id}` : undefined);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (active) {
+      void video.play().catch(() => undefined);
+    } else {
+      video.pause();
+    }
+  }, [active]);
+
+  if (!videoSrc) {
     return (
       <div className={styles.videoSlot}>
         <span>VIDEO SLOT</span>
@@ -77,11 +93,12 @@ function VideoOrSlot({ item, label }: { item?: MediaItem; label: string }) {
 
   return (
     <video
+      ref={videoRef}
       className={styles.previewVideo}
-      src={`/api/media/${item.id}`}
+      src={videoSrc}
       muted
       loop
-      autoPlay
+      autoPlay={active}
       playsInline
       preload="metadata"
     />
@@ -268,6 +285,10 @@ export default function PortfolioShowcase() {
           : "ЖК МЕТАЛЛИСТ"
     : "";
 
+  const selectedStaticVideo = selectedCase?.kind === "building"
+    ? buildings[selectedCase.index]?.video
+    : undefined;
+
   const selectedEyebrow = selectedCase?.kind === "building"
     ? "НЕДВИЖИМОСТЬ"
     : selectedCase?.kind === "school"
@@ -318,8 +339,6 @@ export default function PortfolioShowcase() {
             {buildings.map((building, index) => {
               const isActive = activeBuilding === index;
               const isDimmed = activeBuilding !== null && !isActive;
-              const primaryVideo = buildingVideos[index]?.[0];
-
               return (
                 <button
                   type="button"
@@ -336,7 +355,7 @@ export default function PortfolioShowcase() {
                   aria-label={`Открыть кейс ${building.title}`}
                 >
                   <div className={styles.buildingMedia}>
-                    <VideoOrSlot item={primaryVideo} label={building.title} />
+                    <VideoOrSlot src={building.video} label={building.title} active={isActive} />
                   </div>
                   <div className={styles.facade} aria-hidden="true" />
                   <div className={styles.facadeShade} aria-hidden="true" />
@@ -525,20 +544,22 @@ export default function PortfolioShowcase() {
             <div className={styles.modalHead}>
               <p>{selectedEyebrow}</p>
               <h2>{selectedTitle}</h2>
-              <span>{selectedVideos.length.toString().padStart(2, "0")} VIDEO</span>
+              <span>{(selectedStaticVideo ? 1 : selectedVideos.length).toString().padStart(2, "0")} VIDEO</span>
             </div>
 
             <div className={styles.modalHero}>
-              <VideoOrSlot item={selectedVideos[0]} label={selectedTitle ?? "CASE"} />
+              <VideoOrSlot src={selectedStaticVideo} item={selectedVideos[0]} label={selectedTitle ?? "CASE"} />
             </div>
 
-            <div className={styles.modalGrid}>
-              {(selectedVideos.length > 1 ? selectedVideos.slice(1, 5) : [undefined, undefined, undefined]).map((item, index) => (
-                <div className={styles.modalThumb} key={item?.id ?? `slot-${index}`}>
-                  <VideoOrSlot item={item} label={`${selectedTitle} / ${String(index + 2).padStart(2, "0")}`} />
-                </div>
-              ))}
-            </div>
+            {selectedVideos.length > 1 && (
+              <div className={styles.modalGrid}>
+                {selectedVideos.slice(1, 5).map((item, index) => (
+                  <div className={styles.modalThumb} key={item.id}>
+                    <VideoOrSlot item={item} label={`${selectedTitle} / ${String(index + 2).padStart(2, "0")}`} />
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       )}
