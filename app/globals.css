@@ -147,10 +147,17 @@ a { color: inherit; text-decoration: none; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 .section-label { font: 9px/1.4 monospace; letter-spacing: .12em; opacity: .65; }
 .eyebrow { font: 10px/1.4 monospace; letter-spacing: .1em; }
-.about { min-height: 100svh; padding: 12vw 2.2vw; display: grid; grid-template-columns: 1fr 3fr; gap: 4vw; align-items: center; position: relative; isolation: isolate; overflow: hidden; background: #080808; }
-.about::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(6,6,6,.88) 0%, rgba(6,6,6,.52) 52%, rgba(6,6,6,.78) 100%), linear-gradient(180deg, rgba(6,6,6,.16) 0%, rgba(6,6,6,.7) 100%); pointer-events: none; }
-.about-background { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: .78; filter: saturate(.86) contrast(1.08) brightness(.78); pointer-events: none; }
+@property --spot-x { syntax: "<length-percentage>"; inherits: true; initial-value: 50%; }
+@property --spot-y { syntax: "<length-percentage>"; inherits: true; initial-value: 50%; }
+@property --spot-radius { syntax: "<length>"; inherits: true; initial-value: -140px; }
+.about { --spot-x: 50%; --spot-y: 50%; --spot-radius: -140px; min-height: 100svh; padding: 12vw 2.2vw; display: grid; grid-template-columns: 1fr 3fr; gap: 4vw; align-items: center; position: relative; isolation: isolate; overflow: hidden; background: #050505; }
+.about::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(6,6,6,.48) 0%, rgba(6,6,6,.1) 48%, rgba(6,6,6,.42) 100%), linear-gradient(180deg, rgba(6,6,6,.06) 0%, rgba(6,6,6,.3) 100%); pointer-events: none; }
+.about-background { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: .58; filter: saturate(.52) contrast(1.08) brightness(.48); transform: scale(1.035); transition: opacity .85s ease, filter .85s ease, transform 1.2s cubic-bezier(.16,1,.3,1); pointer-events: none; }
+.about-darkness { position: absolute; inset: 0; z-index: 1; background: rgba(3,3,3,.94); -webkit-mask-image: radial-gradient(circle at var(--spot-x) var(--spot-y), transparent 0 var(--spot-radius), #000 calc(var(--spot-radius) + clamp(90px, 8vw, 150px))); mask-image: radial-gradient(circle at var(--spot-x) var(--spot-y), transparent 0 var(--spot-radius), #000 calc(var(--spot-radius) + clamp(90px, 8vw, 150px))); transition: --spot-radius .95s cubic-bezier(.16,1,.3,1), --spot-x .14s ease-out, --spot-y .14s ease-out; pointer-events: none; }
+.about.about-is-active { --spot-radius: 170vmax; }
+.about.about-is-active .about-background { opacity: 1; filter: saturate(1) contrast(1.02) brightness(.96); transform: scale(1); }
 .about > .section-label, .about > .about-copy { position: relative; z-index: 2; }
+.about-copy { text-shadow: 0 3px 28px rgba(0,0,0,.72); }
 .about-copy h2 { font-size: clamp(3rem, 7.2vw, 8rem); line-height: .84; letter-spacing: -.075em; margin: 2vw 0 5vw; }
 .about-copy em { color: var(--acid); font-family: Georgia, serif; font-weight: 400; }
 .about-grid { width: 62%; margin-left: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; }
